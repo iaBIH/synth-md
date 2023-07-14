@@ -13,9 +13,9 @@ Each dataset has 10+ attributes including patient personal information and clini
 The synthetic data follow the input census and disease statistics with high accuracy. 
 
 <p float="left">
-<img src="https://github.com/iaBIH/synth-md/blob/main/resources/result_Gender.png" width="300">
-<img src="https://github.com/iaBIH/synth-md/blob/main/resources/result_Race.png" width="300">
-<img src="https://github.com/iaBIH/synth-md/blob/main/resources/result_Age.png" width="300">
+<img src="https://github.com/iaBIH/synth-md/blob/main/resources/result_Gender.png" width="400">
+<img src="https://github.com/iaBIH/synth-md/blob/main/resources/result_Race.png" width="400">
+<img src="https://github.com/iaBIH/synth-md/blob/main/resources/result_Age.png" width="400">
 </p>
 
 ### Citation: 
@@ -36,9 +36,9 @@ This tool and the datasets are described in this paper: [Synthetic Datasets for 
 
   2. Download and install SynthMD: 
 
-     git clone https://github.com/iaBIH/synth-md.git
-     cd synth-md
-     pip install . --user 
+              git clone https://github.com/iaBIH/synth-md.git
+              cd synth-md
+              pip install . --user 
 
 
 ## Example:
@@ -46,14 +46,14 @@ This tool and the datasets are described in this paper: [Synthetic Datasets for 
    The provided [example](https://github.com/iaBIH/synth-md/blob/main/example.py) shows how to use the tool: 
 
    1. Get a census api from https://api.census.gov/data/key_signup.html
-   2. Replace None by your census api in line 10 in the example:
+   2. Replace None by your census api in this [line](https://github.com/iaBIH/synth-md/blob/73abf642d45b895a608644c3728bc1730dd8d770/example.py#L5) in the example:
       
-         censusAPIKey= None 
+              censusAPIKey= None 
 
    3. Run these lines in your terminal
 
-         cd synth-md
-         python example.py
+             cd synth-md
+             python example.py
     
       The downloaded files from census will be saved in datasets folder. The generated synthetic datasets will be saved in output folder.
 
