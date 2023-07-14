@@ -1,0 +1,8 @@
+datasets/usa/usaAge2020-2021/
+datasets/usa/*.csv
+datasets/usa/*.png
+output/*
+!output/.gitkeep
+synthMD/__pycache__/
+build/
+synthMD.egg-info/

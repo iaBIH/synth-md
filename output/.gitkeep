@@ -1,0 +1,4 @@
+/datasets/usa/usaAge2020-2021/
+/datasets/usa/*.csv
+/build/
+/synthMD.egg-info/

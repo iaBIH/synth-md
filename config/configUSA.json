@@ -1,0 +1,36 @@
+
+{ 
+    "rd_datasset_size":{
+      "rd_dataset_size_value":0,
+      "note":"# size of the generated dataset, 0 means gereating all possible patients "
+    }, 
+    "maxAge":{
+      "max-age-value":95,
+      "note":"ref: usaMaxAge  max age 116 https://en.wikipedia.org/wiki/List_of_American_supercentenarians"
+      },
+    "addTime2Date":0,
+    "correctionFactor":{
+      "corr_array":[1, 30, 1],
+      "note":"for each rare disease, some values are conflicted in the literature, the correction factor fix this"
+      },
+    "rdAgeGroupsLst":["<5","5-14","15-19","20-24","25-39","40-60",">60"],      
+    "sexLabels":  [["m","f"],
+                   ["male","female"]
+                  ], 
+    "raceLabels": [["AA","EA","OA"],
+                   ["African-American", "European-American", "Others"]
+                  ],
+    "outputDataLabels": ["idx","age","state","zipCode","sex", "race","birthDate","diagDate", "deathDate"],
+    "age_sex_catigories": ["male","female","total"],
+    "paths":{
+      "rdsPath": ["config", "RDsDataUSA.json"],
+      "usaRaceDataPath": ["datasets", "usa","usa-2020-states-race_ext.csv"],
+      "usaAgeSexDataFilePath":["datasets", "usa","usa-2020-states-age-sex-"],
+      "logFilePath": ["datasets","log.txt"],
+      "resultsFolderPath":["output"]
+    }
+}
+
+  
+   
+  

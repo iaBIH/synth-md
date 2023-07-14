@@ -1,0 +1,185 @@
+{  
+  "RDs":[ 
+    {
+      "RDID": 1,
+      "orphanet_code": 232,      
+      "short_name": "scd",
+      "name": "Sickle Cell Disease",
+      "number_of_patients":  {
+        "nump_value": 100000,
+        "note":"",
+        "refs":["2020, Amanda et al, Trends in sickle cell disease–related mortality in the united states, 1979 to 2017. Annals of Emergency Medicine, 76(3,Supplement):S28–S36, 2020. Sickle Cell Disease in the Emergency Department."]
+      },   
+      "prevalence":{
+        "pr_value":0.00030303030303030303,
+        "note":"1/3300, it will be re-computed based on number of patients and total usa population",
+        "refs":["Editorial Team. Data and statistics on sickle cell disease. https://www.cdc.gov/ncbddd/sicklecell/data.html, accessed 17/1/2023, 2023"]      
+      },
+      "race_percentage":{
+           "races": {
+                "African-American,AA":73.1,
+                "European-American,EA":3.0,
+                "Others,OA":23.9
+          },
+          "refs":["Editorial Team. Data and statistics on sickle cell disease. https://www.cdc.gov/ncbddd/sicklecell/data.html, accessed 17/1/2023, 2023"]            
+      },
+      "diagnosis_dates":{
+          "dg_min_days":150,
+          "dg_max_days":180,
+          "note":"how many days after birth until diagnostic, 5-6 months",
+          "refs":["Editorial Team. Sickle cell disease symptoms. https://www.nhlbi.nih.gov/health/sickle-cell-disease/symptoms, accessed 17/1/2023, 2022."]        
+      },
+      "sex_percentage":{
+        "male": 50.0,
+        "female": 50.0,
+        "note": "NA: No reference available so we used 50%",
+        "refs":[""]     
+      },
+      "death_percentage":{        
+        "rates":{
+          "0-4":   0.00047,
+          "5-14":  0.00030,
+          "15-19": 0.00070,
+          "20-24": 0.00135,
+          "25-39": 0.00275,
+          "40-60": 0.00285,
+          "61-99": 0.00199
+        },
+        "note":"it was per 100000 e.g. 0.47 death per 100000, the values are converted to percentage. y = x/100000*100",
+        "refs":["2020, Amanda et al, Trends in sickle cell disease–related mortality in the united states, 1979 to 2017. Annals of Emergency Medicine, 76(3,Supplement):S28–S36, 2020. Sickle Cell Disease in the Emergency Department."]        
+      },
+      "clinical_parameters": [
+        {
+          "cp_name": "CBC",
+          "cp_unit": "g/dL",
+          "cp_min_value": 6.0,
+          "cp_max_value": 11.0,
+          "refs":["Editorial Team. Blood tests for sickle cell disease. https://sickle-cell.com/blood-test, accessed 17/1/2023, 2020."]            
+        },
+        {
+          "cp_name": "RC",
+          "cp_unit": "%",
+          "cp_min_value": 2.0,
+          "cp_max_value": 3.0,
+          "refs":["Editorial Team. Blood tests for sickle cell disease. https://sickle-cell.com/blood-test, accessed 17/1/2023, 2020."]                      
+        }
+      ]      
+    },
+    {
+      "RDID": 2,
+      "orphanet_code": 586,      
+      "short_name": "cf",
+      "name": "Cystic Fibrosis",
+      "number_of_patients":  {
+        "nump_value": 32100,
+        "note":"",
+        "refs":["Editorial Team. 2021 cystic fibrosis patient-registry-annual-data-report. https://www.cff.org/sites/default/files/2021-11/Patient-Registry-Annual-Data-Report.pdf, accessed 23/1/2023, 2021."]     
+      },   
+      "prevalence":{
+        "pr_value":0.0,
+        "note":"NA, will be computed based on number of patients and total usa population",
+        "refs":["Editorial Team. 2021 cystic fibrosis patient-registry-annual-data-report. https://www.cff.org/sites/default/files/2021-11/Patient-Registry-Annual-Data-Report.pdf, accessed 23/1/2023, 2021."]     
+      },
+      "race_percentage":{
+        "races": {
+            "African-American,AA": 3.5,
+            "European-American,EA": 91.4,
+            "Others,OA": 5.1
+         },
+         "refs":["Editorial Team. 2021 cystic fibrosis patient-registry-annual-data-report. https://www.cff.org/sites/default/files/2021-11/Patient-Registry-Annual-Data-Report.pdf, accessed 23/1/2023, 2021."]            
+      },
+      "diagnosis_dates":{
+          "dg_min_days":2,
+          "dg_max_days":3,
+          "note":"how many days after birth until diagnostic",
+          "refs":[ "Editorial Team. Cystic fibrosis sweat test. https://www.cff.org/intro-cf/sweat-test, accessed 23/1/2023, 2023."]        
+      },
+      "sex_percentage":{
+        "male": 51.7,
+        "female": 48.3,
+        "note": "",
+        "refs":["Editorial Team. 2021 cystic fibrosis patient-registry-annual-data-report. https://www.cff.org/sites/default/files/2021-11/Patient-Registry-Annual-Data-Report.pdf, accessed 23/1/2023, 2021."]     
+      },
+      "death_percentage":{
+        "rates":{
+          "0-4": 0.02873,
+          "5-14": 0.05747,
+          "15-19": 0.18678,
+          "20-24": 0.33045,
+          "25-39": 1.29310,
+          "40-60": 0.87643,
+          "61-99": 0.56034
+        },
+        "note":"the list is estimated from (Age at Death) chart, page 72 in the refernce.  [2.0, 4.0, 13.0, 23.0, 90.0, 61.0, 39.0] per all patientsa, the total death in 2021 was 232. y= x * (1/(232*30)*100, 30 is a correction factor",
+        "refs":["Editorial Team. 2021 cystic fibrosis patient-registry-annual-data-report. https://www.cff.org/sites/default/files/2021-11/Patient-Registry-Annual-Data-Report.pdf, accessed 23/1/2023, 2021."]        
+      },
+      "clinical_parameters": [
+        {
+          "cp_name": "Ch",
+          "cp_unit": "mmol/L",
+          "cp_min_value": 30.0,
+          "cp_max_value": 118.6,
+          "refs":[]            
+      }
+      ]
+    },
+    {
+    "RDID": 3,
+    "orphanet_code": 98896,
+    "short_name": "dmd",
+    "name": "Duchenne Muscular Dystrophy",
+    "number_of_patients":  {
+      "nump_value": 0,
+      "note":"NA: computed based on population and prevalence",
+      "refs":[""]  
+    },   
+    "prevalence":       {
+      "pr_value": 0.00016666666,
+      "note":"1/6000 white male",
+      "refs":["Nader Salari et al. Global prevalence of duchenne and becker musculardystrophy: a systematic review and meta-analysis. J Orthop Surg Res, 17(1):96, February 2022."]  
+    },   
+    "race_percentage":{
+      "races": {
+          "African-American,AA": 29.0,
+          "European-American,EA": 43.0,
+          "Others,OA": 28.0
+        },
+        "refs":["Deborah C Salzberg et al. Differences in race and ethnicity in muscular dystrophy mortality ratesfor males under 40 years of age, 2006-2015. Neuroepidemiology, 50(3-4):201–206, April 2018."]        
+    },
+    "diagnosis_dates":{
+        "dg_min_days":365,
+        "dg_max_days":1095,
+        "note":"how many days after birth until diagnostic, 1-3 years",
+        "refs":["Eun Young Kim et al. Correlation of serum creatine kinase level with pulmonary function in duchenne muscular dystrophy. Ann Rehabil Med, 41(2):306–312, April 2017."]     
+    },
+    "sex_percentage":{
+      "male": 99.998,
+      "female": 0.002,
+      "note": "male 1/3500-1/6000, women 1/50000000",
+      "refs":["Nader Salari et al. Global prevalence of duchenne and becker muscular dystrophy: a systematic review and meta-analysis. J Orthop Surg Res, 17(1):96, February 2022."]     
+    },
+    "death_percentage": {
+      "rates":{
+          "0-4":   0.2,
+          "5-14":  0.2,
+          "15-19": 0.2,
+          "20-24": 59.5,
+          "25-39": 26.1,
+          "40-60": 86.7,
+          "61-99": 99.99
+        },
+        "note":"[0.998, 0.998,   0.998,  0.595,   0.261 ,  0.133,  0.001] survival rate. y=(1.0- x)*100. The patents do not live until old age",
+        "refs":["Jonathan Broomfield et al. Life expectancy in duchenne muscular dystrophy. Neurology, 97(23):e2304–e2314, 2021."]        
+    },
+    "clinical_parameters": [
+      {
+        "cp_name": "CK",
+        "cp_unit": "unit/L",
+        "cp_min_value": 350,
+        "cp_max_value": 23200,
+        "refs":["Eun Young Kim et al. Correlation of serum creatine kinase level with pulmonary function in duchenne muscular dystrophy. Ann Rehabil Med, 41(2):306–312, April 2017."]            
+      }
+    ]
+    }
+  ]
+}
