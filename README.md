@@ -38,7 +38,7 @@ This tool and the datasets are described in this paper: [Synthetic Datasets for 
                 ├── datasets: All downloaded census and preprocessed files will be saved here
                 │       ├── map: required for map charts
                 ├── output: All generated datasets will be saved here when run the tool 
-                ├── rare_disease_datasets: Contains our results and copy of all original downloaded and used files 
+                ├── RDdata: Contains our results and copy of all original downloaded and used files 
                 │   ├── census
                 │   │   ├── map
                 │   │   └── usaAge2020-2021
