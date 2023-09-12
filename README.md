@@ -32,12 +32,6 @@ This tool and the datasets are described in this paper: [Synthetic Datasets for 
 
 ## Repository Structure:
 
-                ├── config: configueration files
-                │   ├── configUSA.json
-                │   └── RDsDataUSA.json
-                ├── datasets: All downloaded census and preprocessed files will be saved here
-                │       ├── map: required for map charts
-                ├── output: All generated datasets will be saved here when run the tool 
                 ├── RDdata: Contains our results and copy of all original downloaded and used files 
                 │   ├── census
                 │   │   ├── map
@@ -46,6 +40,12 @@ This tool and the datasets are described in this paper: [Synthetic Datasets for 
                 │       ├── cf_patients_all_32093.csv
                 │       ├── dmd_patients_all_55219.csv
                 │       └── scd_patients_all_100403.csv
+                ├── config: configueration files
+                │   ├── configUSA.json
+                │   └── RDsDataUSA.json
+                ├── datasets: All downloaded census and preprocessed files will be saved here
+                │       ├── map: required for map charts
+                ├── output: All generated datasets will be saved here when run the tool 
                 ├── LICENSE.txt
                 ├── README.md
                 ├── example.py: An example to shoe how to use the tool after installation
