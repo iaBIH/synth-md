@@ -32,40 +32,41 @@ This tool and the datasets are described in this paper: [Synthetic Datasets for 
 
 ## Repository Structure:
 
-- ├── config: configueration files
-- │...├── configUSA.json
-- │...└── RDsDataUSA.json
-- ├── datasets: All downloaded census and preprocessed files will be saved here
-- │...└── usa
-- │.......├── map
-- │.......└── usaAge2020-2021
-- ├── example.py: An example to shoe how to use the tool after installation
-- ├── LICENSE.txt
-- ├── output: All generated datasets will be saved here when run the tool 
-- │...└── test
-- │.......└── Text.txt
-- ├── rare_disease_datasets: Contains our results and all original downloaded files 
-- │...├── census
-- │...│...├── map
-- │...│...└── usaAge2020-2021
-- │...└── result
-- │.......├── cf_patients_all_32093.csv
-- │.......├── dmd_patients_all_55219.csv
-- │.......└── scd_patients_all_100403.csv
-- ├── README.md
-- ├── requirements.txt
-- ├── resources: Images used in this Readme file.
-- ├── setup.py: Setup file 
-- ├── synthMD: Source code
-- │...├── __init__.py
-- │...├── LICENSE.txt
-- │...├── MDcharts.py: Charting 
-- │...├── MDcreate.py: Synthetic data generation
-- │...├── MDevaluate.py: Evaluation 
-- │...├── MDimport.py: Importing data from census 
-- │...├── MDprepare.py: Preprocessing 
-- │...├── MDutils.py: Utilities 
-- │...└── synthMD.py: Setup
+                ├── config: configueration files
+                │   ├── configUSA.json
+                │   └── RDsDataUSA.json
+                ├── datasets: All downloaded census and preprocessed files will be saved here
+                │   └── usa
+                │       ├── map
+                │       └── usaAge2020-2021
+                ├── example.py: An example to shoe how to use the tool after installation
+                ├── LICENSE.txt
+                ├── output: All generated datasets will be saved here when run the tool 
+                │   └── test
+                │       └── Text.txt
+                ├── rare_disease_datasets: Contains our results and all original downloaded files 
+                │   ├── census
+                │   │   ├── map
+                │   │   └── usaAge2020-2021
+                │   └── result
+                │       ├── cf_patients_all_32093.csv
+                │       ├── dmd_patients_all_55219.csv
+                │       └── scd_patients_all_100403.csv
+                ├── README.md
+                ├── requirements.txt
+                ├── resources: Images used in this Readme file.
+                ├── setup.py: Setup file 
+                ├── synthMD: Source code
+                   ├── __init__.py
+                   ├── LICENSE.txt
+                   ├── MDcharts.py: Charting 
+                   ├── MDcreate.py: Synthetic data generation
+                   ├── MDevaluate.py: Evaluation 
+                   ├── MDimport.py: Importing data from census 
+                   ├── MDprepare.py: Preprocessing 
+                   ├── MDutils.py: Utilities 
+                   └── synthMD.py: Setup
+
 
 ## Installation: 
   
