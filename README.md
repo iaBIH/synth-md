@@ -56,7 +56,7 @@ This tool and the datasets are described in this paper: [Synthetic Datasets for 
                 ├── requirements.txt
                 ├── resources: Images used in this Readme file.
                 ├── setup.py: Setup file 
-                ├── synthMD: Source code
+                └── synthMD: Source code
                    ├── __init__.py
                    ├── LICENSE.txt
                    ├── MDcharts.py: Charting 
@@ -65,8 +65,7 @@ This tool and the datasets are described in this paper: [Synthetic Datasets for 
                    ├── MDimport.py: Importing data from census 
                    ├── MDprepare.py: Preprocessing 
                    ├── MDutils.py: Utilities 
-                   └── synthMD.py: Setup
-
+                   └── synthMD.py: Setup                
 
 ## Installation: 
   
