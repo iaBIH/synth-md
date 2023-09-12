@@ -30,6 +30,43 @@ This tool and the datasets are described in this paper: [Synthetic Datasets for 
  * Adding a new disease is simply done by modifying a JSON file (see the sections below).
  * The synthetic data follow the input census and disease statistics with high accuracy. 
 
+## Repository Structure:
+
+├── config: configueration files
+│   ├── configUSA.json
+│   └── RDsDataUSA.json
+├── datasets: All downloaded census and preprocessed files will be saved here
+│   └── usa
+│       ├── map
+│       └── usaAge2020-2021
+├── example.py: An example to shoe how to use the tool after installation
+├── LICENSE.txt
+├── output: All generated datasets will be saved here when run the tool 
+│   └── test
+│       └── Text.txt
+├── rare_disease_datasets: Contains our results and all original downloaded files 
+│   ├── census
+│   │   ├── map
+│   │   └── usaAge2020-2021
+│   └── result
+│       ├── cf_patients_all_32093.csv
+│       ├── dmd_patients_all_55219.csv
+│       └── scd_patients_all_100403.csv
+├── README.md
+├── requirements.txt
+├── resources: Images used in this Readme file.
+├── setup.py: Setup file 
+├── synthMD: Source code
+   ├── __init__.py
+   ├── LICENSE.txt
+   ├── MDcharts.py: Charting 
+   ├── MDcreate.py: Synthetic data generation
+   ├── MDevaluate.py: Evaluation 
+   ├── MDimport.py: Importing data from census 
+   ├── MDprepare.py: Preprocessing 
+   ├── MDutils.py: Utilities 
+   └── synthMD.py: Setup
+
 ## Installation: 
   
   1. To import the U.S.A census data, one needs to get api key from here: https://api.census.gov/data/key_signup.html after that they key will be submitted to the email and needs activation. Some census variables may need update, check the census website for details and modify the file MDimport if needed (or open a new issue and we will update them).
@@ -140,6 +177,8 @@ This tool and the datasets are described in this paper: [Synthetic Datasets for 
   After that, you can use RDcreate.py to create the synthetic data as shown in the section above.  
   You can also automate the process by importing the census data directly but you will have to modify the files
   RDimport and RDprepare.
+
+
   
 ## License
 
