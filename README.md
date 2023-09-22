@@ -1,8 +1,13 @@
 # SynthMD: Synthetic Datasets for Software Development in Rare Disease Research
 
-This repository contains the code and datasets for our paper [Synthetic Datasets for Software Development in Rare Disease Research]() (to be published). 
+This repository contains the [code](https://github.com/iaBIH/synth-md/edit/main/https://github.com/iaBIH/synth-md/tree/bihmi/synthMD) and [datasets](https://github.com/iaBIH/synth-md/edit/main/RDdata/result) for our paper [Synthetic Datasets for Software Development in Rare Disease Research]() (to be published). 
 
-The tool is used to generate [synthetic datasets](https://github.com/iaBIH/synth-md/edit/main/RDdata/result) with 187,709 patients for three popular rare diseases i.e. [Sickle Cell Disease](https://en.wikipedia.org/wiki/Sickle_cell_disease#:~:text=Sickle%20cell%20disease%20(SCD)%20is,like%20shape%20under%20certain%20circumstances.) (SCD, ORPHA code: 232), [Cystic Fibrosis](https://en.wikipedia.org/wiki/Cystic_fibrosis) (CF, ORPHA code: 586), and [Duchenne Muscular Dystrophy](https://en.wikipedia.org/wiki/Duchenne_muscular_dystrophy) (DMD, ORPHA code: 98896). 
+The tool is used to generate synthetic datasets with 187,709 patients for three popular rare diseases i.e. 
+
+1. [Sickle Cell Disease](https://github.com/iaBIH/synth-md/edit/main/RDdata/result/scd_patients_all_100403.csv) (SCD), ORPHA code: 232.
+2. [Cystic Fibrosis](https://github.com/iaBIH/synth-md/edit/main/RDdata/result/cf_patients_all_32093.csv]) (CF), ORPHA code: 586.
+3. [Duchenne Muscular Dystrophy](https://github.com/iaBIH/synth-md/edit/main/RDdata/result/dmd_patients_all_55219.csv) (DMD), ORPHA code: 98896.
+
 Each dataset has 10+ attributes including patient personal information and clinical parameters. 
 
 ![](https://github.com/iaBIH/synth-md/blob/main/resources/SampleData.png)
