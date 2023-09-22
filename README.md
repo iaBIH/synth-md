@@ -40,7 +40,7 @@ This tool and the datasets are described in this paper: [Synthetic Datasets for 
                 │       ├── cf_patients_all_32093.csv
                 │       ├── dmd_patients_all_55219.csv
                 │       └── scd_patients_all_100403.csv
-                ├── config: configueration files
+                ├── config: configuration files
                 │   ├── configUSA.json
                 │   └── RDsDataUSA.json
                 ├── datasets: All downloaded census and preprocessed files will be saved here
@@ -48,7 +48,7 @@ This tool and the datasets are described in this paper: [Synthetic Datasets for 
                 ├── output: All generated datasets will be saved here when run the tool 
                 ├── LICENSE.txt
                 ├── README.md
-                ├── example.py: An example to shoe how to use the tool after installation
+                ├── example.py: An example to show how to use the tool after installation
                 ├── requirements.txt
                 ├── resources: Images used in this Readme file.
                 ├── setup.py: Setup file 
@@ -65,7 +65,7 @@ This tool and the datasets are described in this paper: [Synthetic Datasets for 
 
 ## Installation: 
   
-  1. To import the U.S.A census data, one needs to get api key from here: https://api.census.gov/data/key_signup.html after that they key will be submitted to the email and needs activation. Some census variables may need update, check the census website for details and modify the file MDimport if needed (or open a new issue and we will update them).
+  1. To import the U.S.A census data, one needs to get API key from here: https://api.census.gov/data/key_signup.html after that the key will be submitted to the email and needs activation. Some census variables may need updating. Check the census website for details and modify the MDimport file if necessary (or open a new issue and we will update them).
 
   2. Download and install SynthMD: 
 
@@ -76,14 +76,14 @@ This tool and the datasets are described in this paper: [Synthetic Datasets for 
 
 ## Example:
 
-   The provided [example](https://github.com/iaBIH/synth-md/blob/main/example.py) shows how to use the tool: 
+   The provided [example](https://github.com/iaBIH/synth-md/blob/main/example.py) file shows how to use the tool: 
 
-   1. Get a census api from https://api.census.gov/data/key_signup.html
-   2. Replace None by your census api in this [line](https://github.com/iaBIH/synth-md/blob/73abf642d45b895a608644c3728bc1730dd8d770/example.py#L5) in the example:
+   1. Get a census API from https://api.census.gov/data/key_signup.html
+   2. Replace 'None' by your census API in this [line](https://github.com/iaBIH/synth-md/blob/73abf642d45b895a608644c3728bc1730dd8d770/example.py#L5) in the example:
       
               censusAPIKey= None 
 
-   3. Run these lines in your terminal
+   3. Run the following lines in your terminal
 
              cd synth-md
              python example.py
@@ -138,7 +138,7 @@ This tool and the datasets are described in this paper: [Synthetic Datasets for 
                         "15-19": 0.0,
                         "20-24": 0.0,
                         "25-39": 0.0,
-                        "40-60": 0.7
+                        "40-60": 0.7,
                         "61-99": 30.0
                       },
                       "note":"",
