@@ -5,7 +5,7 @@ This repository contains the [code](https://github.com/iaBIH/synth-md/edit/main/
 The tool is used to generate synthetic datasets with 187,709 patients for three popular rare diseases i.e. 
 
 * [Sickle Cell Disease](https://github.com/iaBIH/synth-md/edit/main/RDdata/result/scd_patients_all_100403.csv) (SCD), ORPHA code: 232.
-* [Cystic Fibrosis](https://github.com/iaBIH/synth-md/edit/main/RDdata/result/cf_patients_all_32093.csv]) (CF), ORPHA code: 586.
+* [Cystic Fibrosis](https://github.com/iaBIH/synth-md/edit/main/RDdata/result/cf_patients_all_32093.csv) (CF), ORPHA code: 586.
 * [Duchenne Muscular Dystrophy](https://github.com/iaBIH/synth-md/edit/main/RDdata/result/dmd_patients_all_55219.csv) (DMD), ORPHA code: 98896.
 
 Each dataset has 10+ attributes including patient personal information and clinical parameters. 
