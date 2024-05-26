@@ -1,21 +1,24 @@
 import os, sys,  time, json
-from synthMD import MDimport, MDprepare, MDcreate, MDevaluate, MDutils
+from synthRD import RDimport, RDprepare, RDcreate, RDevaluate, RDutils
 
-# censusAPIKey="put your api key here"
+# censusAPIKey = "put your API key here"
 censusAPIKey= None 
 
-# if this script called directly,
+# Check if the script is called directly
 if __name__ == "__main__":
-   # testing 
+   
+    # Print input arguments
    if len(sys.argv) > 1:
       print("input: ", sys.argv)
     
-   #  #print(os.getcwd())
+   # Record the start time of the script
    startTimeTotal = time.time()
 
+    # Define paths to configuration and result files
    cfgPath   = os.path.join("config","configUSA.json")
    resultsPath = "output"
-   # Folder and file paths 
+   
+    # Define folder and file paths for datasets
    usaFolderPath               = os.path.join("datasets", "usa")
    usaRaceDataPath             = os.path.join(usaFolderPath, "usa-2020-states-race.csv")
    usaAgeSexDataFolderPath     = os.path.join(usaFolderPath, "usaAge2020-2021")
@@ -26,33 +29,34 @@ if __name__ == "__main__":
    usaAgeSexDataFilesPath = [usaAgeSexMaleDataFilePath,usaAgeSexFemaleDataFilePath,usaAgeSexTotalDataFilePath]
    catlabels=["male","female","total"]
 
+    # Flags for executing various steps
    doImport     = 1
    doPrepare    = 1
    doCreate     = 1 
    doEvaluation = 1
 
    if doImport:
-      # Import/download USA census data 
-      
+      # Import or download USA census data
       # Use proxy if needed
       proxies ={}
-
-      MDimport.getUSACensusData(censusAPIKey=censusAPIKey, datasetFolder=usaFolderPath)
+      RDimport.getUSACensusData(censusAPIKey=censusAPIKey, datasetFolder=usaFolderPath)
    
    if doPrepare:
-      # Preprocessing 
+      # Preprocess the data
       cfg               = json.load(open(cfgPath))
-      MDprepare.getPreparedData(cfg, usaRaceDataPath, usaAgeSexDataFolderPath, usaAgeSexDataFilePath, usaAgeSexMaleDataFilePath, usaAgeSexFemaleDataFilePath, usaAgeSexTotalDataFilePath, catlabels)
+      RDprepare.getPreparedData(cfg, usaRaceDataPath, usaAgeSexDataFolderPath, usaAgeSexDataFilePath, usaAgeSexMaleDataFilePath, usaAgeSexFemaleDataFilePath, usaAgeSexTotalDataFilePath, catlabels)
 
    if doCreate:
-      # ---------------- Creating Synthetic Datasets --------------------
-      cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGroupData, paths = MDutils.readInputFiles(cfgPath)  
-      MDcreate.createSyntheticDatasets(cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGroupData, paths,  doEvaluation= 0)
- 
+      # Create synthetic datasets
+      cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGroupData, paths = RDutils.readInputFiles(cfgPath)  
+      RDcreate.createSyntheticDatasets(cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGroupData, paths,  doEvaluation= 0)
+
+   # Evaluate the synthetic datasets
    # Note evaluation can be done faster with createSyntheticDatasets function above 
    if doEvaluation:      
-      MDevaluate.getAllEvaluation(cfgPath)
+      RDevaluate.getAllEvaluation(cfgPath)
 
+   # Calculate the total execution time
    endTmTotal = time.time() - startTimeTotal 
    print("Total time = ", endTmTotal, " seconds")
 
