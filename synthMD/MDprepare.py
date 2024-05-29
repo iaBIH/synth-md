@@ -11,26 +11,27 @@ from scipy.optimize import minimize
 
 from synthMD import MDutils, MDcharts
 
-
+# Function to read race data from a CSV file and restructure it
 def getRaceData(cfg, raceDataFilePath):
     
     print("Reading race data: ", raceDataFilePath)
         
     #-------- race data for each state 
+    # Read race data from CSV file
     raceData     = [row for row in csv.reader(open(raceDataFilePath), delimiter=",", quotechar='"')]
     raceData[1:] = [ [s.strip("[]'") for s in x[0].split(', ')] for x in raceData[1:]]
     
-    # get race names   
+    # Get race names from JSON configuration file  
     rdsPath = cfg["paths"]["rdsPath"] 
     rdsPath = os.path.join(*rdsPath)
     RDsData      = json.load(open(rdsPath))["RDs"]
     raceNamesLst = [x.split(",")[0] for x in list(RDsData[0]["race_percentage"]["races"].keys())]
     
-    # restructure labels and data 
+    # Restructure labels and data 
     raceData[0]  = [ raceData[0][4], raceData[0][0], raceNamesLst[0], raceNamesLst[1],raceNamesLst[2], raceData[0][1] ]
     raceData[1:] = [ [int(x[4]), x[0], int(x[3]), int(x[2]), int(x[1])- int(x[2])-int(x[3]) ,int(x[1])] for x in raceData[1:]]
 
-    # save to csv file
+    # Save the restructured data to a new CSV file
     csv.writer(open(raceDataFilePath[:-4]+"_ext.csv", 'w', newline='')).writerows(raceData)
             
     return raceData 
@@ -38,6 +39,7 @@ def getRaceData(cfg, raceDataFilePath):
 #-------------------------------- Extract Age Sex Data from usaAgeSexDataFolderPath into 4 files
 #  usaAgeSexDataFilePath: all useful extratced data 
 #  usaAgeSexMaleDataFilePath, usaAgeSexFemaleDataFilePath, usaAgeSexTotalDataFilePath: data of male, female and both
+# Function to extract and process age-sex data from multiple CSV files
 def getAgeSexData(usaAgeSexDataFolderPath, usaAgeSexDataFilePath, usaAgeSexMaleDataFilePath, usaAgeSexFemaleDataFilePath, usaAgeSexTotalDataFilePath):
     
     ageSexData=[]
@@ -46,54 +48,55 @@ def getAgeSexData(usaAgeSexDataFolderPath, usaAgeSexDataFilePath, usaAgeSexMaleD
        fnms  = os.listdir(usaAgeSexDataFolderPath)
        fnms  = sorted([x for x in fnms if ".csv" in x ])
             
-       # read each file
+       # Read each file and process the data
        for fnm in fnms:            
             print("reading : ", fnm)
             
             #TODO: add columns config to config.json
-            # get state and id from filename
+            # Extract state ID and name from the filename
             id    = int(fnm[-9:-7])
             state = fnm[-6:-4]
             
-            # read the file into list
+            # Read the file into a list
             dataReader = csv.reader(open(os.path.join(usaAgeSexDataFolderPath,fnm)), delimiter=",", quotechar='"')
             fileData   = [row for row in dataReader]
             
-            # restructure and convert to numbers
+            # Restructure and convert to numbers
             dataArray    = [[x[0], x[2], x[3], x[1]] for x in fileData[6:92]] 
             dataArray    = [[ i, x[1], x[2], x[3]]  for i, x in enumerate(dataArray)] 
             dataArray.insert(0,[id,state])
             # flatten to 345 elements
             dataArray = [item for sublist in dataArray for item in sublist]
 
-            # add to list of all states                
+            # Add to list of all states                
             ageSexData.append(dataArray)
        
-       # restructure
-       #ageSexData: 51 x id, state,    age, male, female, total,...,age, male female total
+       # Restructure the data
+       # ageSexData: 51 x id, state,    age, male, female, total,...,age, male female total
        labels = ["id", "state"]
        labels.extend(["age","male","female","total"]* 86)
-
        allData = []
        allData.append(labels)
+        
        for x in ageSexData:
            allData.append(x)
 
        numStates = len(ageSexData)
     
-       #           for each ages, we have 4 fields age, m,f,t  
+       # For each ages, we have 4 fields age, m,f,t  
        numAges   = int((len(ageSexData[0])-2)/4)
 
-       # male population for each age for each state
+       # Male population for each age for each state
        ageStateMaleLst    =[]
     
-       # female population for each age for each state       
+       # Female population for each age for each state       
        ageStateFemaleLst  =[]
     
-       # population for each age for each state       
+       # Population for each age for each state       
        ageStateTotalLst  =[]
-               
-       # create 3 large tables 51 rows x 2+86 columns
+
+       # Create separate lists for male, female, and total populations by age for each state
+       # Three large tables 51 rows x 2+86 columns
        # id state age_0-age_85 
        # for each state
        for i in range(numStates):
@@ -167,7 +170,7 @@ def minimizeError(estimated_population, estimation_sum):
     return [int(z) for z in  result.x]
 
 # Create a new estimated list for missing ages
-# we distributed the last age value on the missing ages
+# We distributed the last age value on the missing ages
 def getEstimatedList(ages_population, maxInputAge=None, maxEstimatedAge=None, maxError=None):
     maxInputAge     = 84 if maxInputAge is None else maxInputAge
     maxEstimatedAge = 96 if maxEstimatedAge is None else maxEstimatedAge -1
@@ -203,10 +206,10 @@ def getEstimatedList(ages_population, maxInputAge=None, maxEstimatedAge=None, ma
        
     return estimated_population
 
-
+# Function to fix age-sex data by adding estimated values for missing ages
 def getFixAgeSexData(ageSexData=None, maxAge=None, fnmPath=None, usaAgeSexDataFilesPath=None, catlabels=None):
     
-    # first check if the files exist
+    # First check if the files exist
     fixedFilePaths =  [x[:-4]+"_ext.csv" for x in usaAgeSexDataFilesPath]
     
     ## This is computed only when the files are created
@@ -216,16 +219,16 @@ def getFixAgeSexData(ageSexData=None, maxAge=None, fnmPath=None, usaAgeSexDataFi
         
         maxAge = 95 if maxAge is None else maxAge
         
-        # fix the ageSexData
+        # Fix the ageSexData
         fixedAgeSexData = [[ statePop[:-1] + 
                             sorted(getEstimatedList(statePop[2:], maxInputAge=len(statePop)-3, maxEstimatedAge=maxAge + 1, maxError=100),reverse=True) 
                             for statePop in cat[1:]] for i, cat in enumerate(ageSexData)]
 
-        # save the result to csv files
+        # Save the result to csv files
         for c in range(3):
             csv.writer(open(fixedFilePaths[c],   'w', newline='')).writerows(fixedAgeSexData[c])
     
-            ## plot the result and save the charts
+            ## Plot the result and save the charts
             Y0 = [ sum([ x[i+2] for x in ageSexData[c][1:] ])  for i in range(86)]
             Y1 = [ sum([ x[i+2] for x in fixedAgeSexData[c]])  for i in range(maxAge+1)]
             errCount      = Y0[-1]-sum(Y1[85:])
@@ -238,7 +241,7 @@ def getFixAgeSexData(ageSexData=None, maxAge=None, fnmPath=None, usaAgeSexDataFi
             MDcharts.plotData(Y1, figTitle=catlabels[c]+" Age After, error count: "+str(errCount)+" error: "+errPercentage+"%", XticksLabelsLst=None, isPercentageOutput=None,  doShow=0, chartFnmPath=fnm2)
         
     else:
-        # read the file and return the data:
+        # Read the file and return the data:
         print("Fixed: usaAgeSexData files exist: ", fixedFilePaths[0])
          
         fixedAgeSexData= [[ [int(x[0]), x[1]] +[int(y) for y in x[2:] ] for x in 
@@ -247,11 +250,11 @@ def getFixAgeSexData(ageSexData=None, maxAge=None, fnmPath=None, usaAgeSexDataFi
                                               for c in range(3)]
     return fixedAgeSexData
 
-# Regroup into 7 groups
-# output should be 51 states x 7 age groups
+# Function to regroup age-sex data into 7 age groups
+# Output should be 51 states x 7 age groups
 def getGroupedAgeSexData(ageSexData=None, rdsAgeGroups=None, maxAge=None, usaAgeSexDataFilesPath=None, catlabels=None):     
 
-    # first check if the files exist
+    # First check if the files exist
     groupedFilePaths =  [x[:-4]+"_grp.csv" for x in usaAgeSexDataFilesPath]
 
     groupedAgeSexData =  []
@@ -276,12 +279,12 @@ def getGroupedAgeSexData(ageSexData=None, rdsAgeGroups=None, maxAge=None, usaAge
                 cStates.append(cState)        
             groupedAgeSexData.append(cStates)
                 
-       ## save the result to csv files
+       ## Save the result to csv files
        statesIDs, statesSName, statesLName =  MDutils.getUSAstateNames()
        for c in range(3):
            csv.writer(open(groupedFilePaths[c], 'w', newline='')).writerows(groupedAgeSexData[c])
           
-           # population of each state
+           # Population of each state
            Y = [ sum(groupedAgeSexData[c][s][2:]) for s in range(len(groupedAgeSexData[c])) ]
            fnm = os.path.join("datasets","usa","chart_usa-2020-states-age-sex-"+catlabels[c]+"_state.png")
            figTitle = catlabels[c]+" population per state"
@@ -316,6 +319,7 @@ def getGroupedAgeSexData(ageSexData=None, rdsAgeGroups=None, maxAge=None, usaAge
                                                   for c in range(3)]
     return groupedAgeSexData
 
+# Main function to prepare data by calling all necessary sub-functions
 def getPreparedData(cfg, usaRaceDataPath, usaAgeSexDataFolderPath, usaAgeSexDataFilePath, usaAgeSexMaleDataFilePath, usaAgeSexFemaleDataFilePath, usaAgeSexTotalDataFilePath, catlabels):
     
     prepTimeStart = time.time()
@@ -324,15 +328,15 @@ def getPreparedData(cfg, usaRaceDataPath, usaAgeSexDataFolderPath, usaAgeSexData
     ## rdAgeGroupsLst  = [  "<5"   ,"5-14"  ,"15-19"  ,"20-24"  ,"25-39"  ,"40-60"  ,">60"]
     rdAgeGroupsLst    = cfg["rdAgeGroupsLst"]
     
-    ## get race data and use labels from config file
+    ## Get race data and use labels from config file
     raceData        = getRaceData(cfg, usaRaceDataPath)
 
-    ## collect data from all files into one file 
+    ## Collect data from all files into one file 
     ageSexData      = getAgeSexData(usaAgeSexDataFolderPath, usaAgeSexDataFilePath, usaAgeSexMaleDataFilePath, usaAgeSexFemaleDataFilePath, usaAgeSexTotalDataFilePath)
 
     usaAgeSexDataFilesPath = [usaAgeSexMaleDataFilePath,usaAgeSexFemaleDataFilePath,usaAgeSexTotalDataFilePath]
 
-    ## add missing ages 85:maxAge 
+    ## Add missing ages 85:maxAge 
     fixedAgeSexData = getFixAgeSexData(ageSexData, maxAge=maxAge, usaAgeSexDataFilesPath=usaAgeSexDataFilesPath, catlabels=catlabels)
 
     groupedAgeSexData = getGroupedAgeSexData(fixedAgeSexData,rdAgeGroupsLst, maxAge=maxAge, usaAgeSexDataFilesPath=usaAgeSexDataFilesPath, catlabels=catlabels)
@@ -340,7 +344,7 @@ def getPreparedData(cfg, usaRaceDataPath, usaAgeSexDataFolderPath, usaAgeSexData
     prepTimeEnd = time.time() - prepTimeStart
     print("Prepared data took ", prepTimeEnd, " seconds") 
 
-# if this script called directly
+# Main script execution
 if __name__ == "__main__":
     # testing 
     if len(sys.argv) > 1:

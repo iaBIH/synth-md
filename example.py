@@ -1,5 +1,5 @@
 import os, sys,  time, json
-from synthRD import RDimport, RDprepare, RDcreate, RDevaluate, RDutils
+from synthMD import MDimport, MDprepare, MDcreate, MDevaluate, MDutils
 
 # censusAPIKey = "put your API key here"
 censusAPIKey= None 
@@ -39,22 +39,22 @@ if __name__ == "__main__":
       # Import or download USA census data
       # Use proxy if needed
       proxies ={}
-      RDimport.getUSACensusData(censusAPIKey=censusAPIKey, datasetFolder=usaFolderPath)
+      MDimport.getUSACensusData(censusAPIKey=censusAPIKey, datasetFolder=usaFolderPath)
    
    if doPrepare:
       # Preprocess the data
       cfg               = json.load(open(cfgPath))
-      RDprepare.getPreparedData(cfg, usaRaceDataPath, usaAgeSexDataFolderPath, usaAgeSexDataFilePath, usaAgeSexMaleDataFilePath, usaAgeSexFemaleDataFilePath, usaAgeSexTotalDataFilePath, catlabels)
+      MDprepare.getPreparedData(cfg, usaRaceDataPath, usaAgeSexDataFolderPath, usaAgeSexDataFilePath, usaAgeSexMaleDataFilePath, usaAgeSexFemaleDataFilePath, usaAgeSexTotalDataFilePath, catlabels)
 
    if doCreate:
       # Create synthetic datasets
-      cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGroupData, paths = RDutils.readInputFiles(cfgPath)  
-      RDcreate.createSyntheticDatasets(cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGroupData, paths,  doEvaluation= 0)
+      cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGroupData, paths = MDutils.readInputFiles(cfgPath)  
+      MDcreate.createSyntheticDatasets(cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGroupData, paths,  doEvaluation= 0)
 
    # Evaluate the synthetic datasets
    # Note evaluation can be done faster with createSyntheticDatasets function above 
    if doEvaluation:      
-      RDevaluate.getAllEvaluation(cfgPath)
+      MDevaluate.getAllEvaluation(cfgPath)
 
    # Calculate the total execution time
    endTmTotal = time.time() - startTimeTotal 

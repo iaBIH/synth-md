@@ -26,8 +26,9 @@ def getRaceSexEvaluation(i, RDnamesLst, outputData, totalNumberOfPatients, sexWe
                             agePopulationsStatesAll, processingTime, logLines):
     
     roundPlaces = 2
-    # for all states for all 7 age groups 
-    # size: 51 x 7
+    # Extracting age group populations for all states
+    # For all states for all 7 age groups 
+    # Size: 51 x 7
     agePopulations = agePopulationsStatesAll[2]
     totalUSA = sum([sum(s) for s in agePopulations])
 
@@ -35,25 +36,31 @@ def getRaceSexEvaluation(i, RDnamesLst, outputData, totalNumberOfPatients, sexWe
     logLines.append(logLine)
     print(logLine)
 
+    # Logging processing time
     logLine = " processing time in seconds: " +str(processingTime)+" \n"
     logLines.append(logLine)
     print(logLine)
 
+    # Logging total USA population
     logLine = "USA population: "+ str(totalUSA) +"\n"
     logLines.append(logLine)
     print(logLine)
     pAll = len(outputData) -1
+                                
     ## ----------------------------- total number of patients 
+    # Logging total number of patients (result vs expected)
     logLine = "Total patients: result vs expected: "+ str(pAll) + " , "+ str(totalNumberOfPatients) +"\n"
     logLines.append(logLine )
     print(logLine)
 
     ## ----------------------------- Sex and Race Ratios
+    # Logging ratios of sex and race
     logLine = "----------- Ratios: sex, AA, EA, OA, Death \n"
     logLines.append(logLine )
     print(logLine)
     #            0       1       2              3        4      5      6            7          8
     # pData = [pCount, pAge, usStateNames[s] ,pZipCode, pSex, pRace, pBirthDate, pDiagDate, pDeathDate]
+    # Number of female and male patients in the dataset
     numF = ([x for x in outputData[1:] if x[4]=='f'])
     numM = ([x for x in outputData[1:] if x[4]=='m'])
 
@@ -65,16 +72,19 @@ def getRaceSexEvaluation(i, RDnamesLst, outputData, totalNumberOfPatients, sexWe
     logLines.append(logLine )
     print(logLine)
 
-
+    # Logging female ratio
     logLine = tryPrint("Female ratio  : ", numF , pAll, sexWeights[i]                , roundPlaces )
     logLines.append(logLine )
 
+    # Logging African American ratio
     logLine = tryPrint("AA ratio      : ", [x for x in outputData[1:] if x[5]==raceNamesLst[0]], pAll, raceWeights[i][0], roundPlaces )
     logLines.append(logLine )
 
+    # Logging European American ratio
     logLine = tryPrint("AE ratio      : ", [x for x in outputData[1:] if x[5]==raceNamesLst[1]], pAll, raceWeights[i][1], roundPlaces )
     logLines.append(logLine )
 
+    # Logging Other American ratio
     logLine = tryPrint("AO ratio      : ", [x for x in outputData[1:] if x[5]==raceNamesLst[2]], pAll, raceWeights[i][2], roundPlaces )
     logLines.append(logLine )
 
@@ -90,6 +100,7 @@ def getRaceSexEvaluation(i, RDnamesLst, outputData, totalNumberOfPatients, sexWe
     except Exception as e:
         print(e)
 
+    # If a second clinical parameter is present, evaluate it as well
     if len(outputData[0])==11:
         pCP2= [x[10] for x in outputData[1:]]
         try:
@@ -108,30 +119,38 @@ def getAgeGroupsEvaluation(i, outputData, agePopulationsStatesAll, pAll,totalUSA
    
     mAgePopulations, fAgePopulations, agePopulations = agePopulationsStatesAll
 
+    # Summing up the age group populations
     logLine = " Age group percentages:------------ \n"
     logLines.append(logLine )
     print(logLine)
-
     agePopulationsSum  = [ sum(s)for s in zip(*agePopulations)]
     for k in range(len(rdAgeGroupsLst)):
+
+        # Number of patients in age group k
         L = [x for x in outputData[1:] if MDutils.getAgeGroupIndex(x[1])==k ]
         logLine = tryPrint(" Age groups  "+rdAgeGroupsLst[k]+"\t" , L , pAll, round((agePopulationsSum[k]/totalUSA)*100, roundPlaces) , roundPlaces )
         logLines.append(logLine )
 
+    # Summing up the female age group populations
     logLine = " Age groups Female:------------ \n"
     logLines.append(logLine )
     print(logLine)    
     agePopulationsFSum = [ sum(s)for s in zip(*fAgePopulations)]
     for k in range(len(rdAgeGroupsLst)):
+
+        # Number of female patients in age group k
         L = [x for x in outputData[1:] if MDutils.getAgeGroupIndex(x[1])==k and x[4]=='f']        
         logLine = tryPrint(" Age groups  "+rdAgeGroupsLst[k]+"\t" , L , pAll, round((agePopulationsFSum[k]/totalUSA)*100, roundPlaces) , roundPlaces )
         logLines.append(logLine )
 
+    # Summing up the male age group populations
     logLine = " Age groups Male  :------------ \n"
     logLines.append(logLine )
     print(logLine)    
     agePopulationsMSum = [ sum(s)for s in zip(*mAgePopulations)]
     for k in range(len(rdAgeGroupsLst)):
+
+        # Number of male patients in age group k
         L = [x for x in outputData[1:] if MDutils.getAgeGroupIndex(x[1])==k and x[4]=='m']        
         logLine = tryPrint(" Age groups  "+rdAgeGroupsLst[k]+"\t" , L , pAll, round((agePopulationsMSum[k]/totalUSA)*100, roundPlaces) , roundPlaces )
         logLines.append(logLine )
@@ -141,8 +160,9 @@ def getAgeGroupsEvaluation(i, outputData, agePopulationsStatesAll, pAll,totalUSA
 def getDeathGroupsEvaluation(i, outputData, deathRates, statePatientsDeads, statePatientsAlives, rdAgeGroupsLst,agePopulationsSum, logLines):
     print(" Age groups Deaths: ")
 
-    # numberOfPatientsAges 51 x 7
-    # print(fix dead patients number vs ground truth and check for other diseases)
+    # Summing up the dead and alive patients per state and age group
+    # NumberOfPatientsAges 51 x 7
+    # Print(fix dead patients number vs ground truth and check for other diseases)
     statePatientsDeadsSum  = [sum(s) for s in zip(*statePatientsDeads) ]
     statePatientsAlivesSum = [sum(s) for s in zip(*statePatientsAlives)]
 
@@ -156,25 +176,20 @@ def getDeathGroupsEvaluation(i, outputData, deathRates, statePatientsDeads, stat
     print(logLine)
 
     for k in range(len(rdAgeGroupsLst)):
-        # total number of people in this age group
+        # Total population of age group k
         groupPopulation                = agePopulationsSum[k]
         numberOfPatientsPerGroup       = len([x for x in outputData[1:] if MDutils.getAgeGroupIndex(x[1])==k ])
-        # actual dead patients 
 
+        # Number of dead patients in age group k
         numberOfPatientsPerGroupDead = len([x for x in outputData[1:] if MDutils.getAgeGroupIndex(x[1]) == k and x[8] not in (None, 0)])
 
-        # ground truth dead patients 
+        # Expected number of dead patients based on ground truth data
         numAgeDeadPtGT   =  int(statePatientsDeadsSum[k])
         
-        # dead_group_patients / all_group_patients  
+        # Calculating death rate and prevalence 
         deathRate = f'{(numberOfPatientsPerGroupDead / numberOfPatientsPerGroup)*100:.5f}'
-
         deathRateGT = f'{deathRates[i][k]:.7f}'
-
-        # prevalence
         prevalence = f'{numberOfPatientsPerGroup / groupPopulation:.8f}'
-
-        # prevalenceGT
         prevalenceGT = f'{numberOfPatientsPerGroup / groupPopulation:.8f}'
 
         sumPatients  = sumPatients    + numberOfPatientsPerGroup
@@ -191,6 +206,7 @@ def getDeathGroupsEvaluation(i, outputData, deathRates, statePatientsDeads, stat
 
     return logLines, sumPatients, sumDead, sumPrevalence, sumDeathRate    
 ## ------------------------------------- getAgeGroupsEvaluation -------------------------------------  
+# Evaluates the distribution of age groups and deaths in the synthetic dataset.
 def getGroupsEvaluation(i, outputData, deathRates, agePopulationsStatesAll, numberOfPatientsAges, rdAgeGroupsLst, logLines):
 
     pAll = len(outputData) -1
@@ -207,8 +223,9 @@ def getGroupsEvaluation(i, outputData, deathRates, agePopulationsStatesAll, numb
     return logLines, sumPatients, sumPrevalence, sumDead, sumDeathRate
 
 def getDeathEvaluation(i, outputData, deathRates, numberOfPatientsAges, rdAgeGroupsLst, sumPatients, sumPrevalence, sumDead, sumDeathRate, logLines):    
-
-    # number of dead patients in the results 
+# Evaluates the death rates in the synthetic dataset compared to the expected values.
+    
+    # Number of dead patients in the results 
     numDeathResult = 0
     try:
         ## note, if it is processed, it will be zero instead of None
@@ -217,9 +234,9 @@ def getDeathEvaluation(i, outputData, deathRates, numberOfPatientsAges, rdAgeGro
         print("Error numDeathResult:  ", e)
         numDeathResult = 0
     
-    # get expected death cases 
-    # number of dead and alive patients per state
-    #  dead patients  = deathRates * numer of patients in the state 
+    # Calculating the expected number of dead patients 
+    # Number of dead and alive patients per state
+    # Dead patients  = deathRates * numer of patients in the state 
     statePatientsDeads   =  [ [ round((x/100.0) * y) for x,y in zip(deathRates[i], numberOfPatientsAges[s])] for s in range((51)) ]
     print("statePatientsDeads : ", statePatientsDeads)
     print()
@@ -258,7 +275,8 @@ def getDeathEvaluation(i, outputData, deathRates, numberOfPatientsAges, rdAgeGro
     return logLines
 
 #----------- Evaluation  ------------------
-# print statistics about results 
+# Performs the full evaluation of the synthetic dataset
+# Print statistics about results 
 def getEvaluation(i, RDnamesLst, rd_datasset_size, outputData, totalNumberOfPatients, sexWeights, raceWeights, raceNamesLst, clinicalParsLst, deathRates,
                       agePopulationsStatesAll, numberOfPatientsAges, processingTime, rdAgeGroupsLst, sexlabels, raceLabels, resultFilePath, doSave=None, doPlot=None):
        
@@ -267,15 +285,16 @@ def getEvaluation(i, RDnamesLst, rd_datasset_size, outputData, totalNumberOfPati
     
         logLines = []
 
-        # get total staistics  
+        # Get total staistics  
         logLines =  getRaceSexEvaluation(i, RDnamesLst, outputData, totalNumberOfPatients, sexWeights, raceWeights, raceNamesLst, clinicalParsLst,  
                             agePopulationsStatesAll, processingTime, logLines)
         
         logLines, sumPatients, sumPrevalence, sumDead, sumDeathRate = getGroupsEvaluation(i, outputData, deathRates, agePopulationsStatesAll, numberOfPatientsAges, rdAgeGroupsLst, logLines)
 
-        # get death statistics
+        # Get death statistics
         logLines = getDeathEvaluation(i, outputData, deathRates, numberOfPatientsAges, rdAgeGroupsLst, sumPatients, sumPrevalence, sumDead, sumDeathRate, logLines)
 
+        # Saving the results
         if doSave:
             #------------------------------------------------
             print("Saving results log  ...................")
@@ -288,10 +307,12 @@ def getEvaluation(i, RDnamesLst, rd_datasset_size, outputData, totalNumberOfPati
                     fp.write(x)  
             fp.close() 
 
+        # Plotting the results
         if doPlot:
            MDcharts.plotRareDiseaseData(resultFilePath, sexlabels, raceLabels)
 
 def getAllEvaluation(cfgPath):
+# Performs the full evaluation for all rare diseases based on the configuration files
     
     cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGroupData, paths = MDutils.readInputFiles(cfgPath)
 
@@ -324,7 +345,7 @@ def getAllEvaluation(cfgPath):
         fnm = [ x for x in os.listdir(resultsRDpath) if "_all_" in x][0]
         resultFilePath = os.path.join(resultsRDpath,fnm,RDFileNamesLst[i]+"_"+ fnm+".csv")
 
-        # read the result file and get its statitics
+        # Read the result file and get its statistics
         maxUSAAge, dataLabels, rdFinalData =  MDutils.readingCSVdata(resultFilePath, 0)
 
         totalNumberOfPatients   = round(sum([ (x *  y) for x,y in zip(prevalenceRaceLst[i], racePopulations)]))  
@@ -343,6 +364,7 @@ def getAllEvaluation(cfgPath):
         
 
 def parse_file(file_name):
+# Parses the evaluation results file and extracts key metrics
     data = {}
     with open(file_name, 'r') as f:
         lines = f.readlines()
@@ -382,7 +404,8 @@ def parse_file(file_name):
                 cpMax= str(float(vals[1]))+' , '+str(float(vals[4]))
                 data['ClinicalPars'].append([cpMin,cpMax])
                 cp =cp + 1
-        # ---------------- Age Groups: Total, Male, Female--------------------------    
+        # ---------------- Age Groups: Total, Male, Female--------------------------  
+        # Extract age group data
         for l in range(len(lines)):
             if 'Age groups' in lines[l]:
                 break 
@@ -393,7 +416,8 @@ def parse_file(file_name):
                 data[i + j] = txt
                 l = l +1 
             l=l+1 
-        # -------------- Age Groups: Death Info----------------------------    
+        # -------------- Age Groups: Death Info----------------------------  
+        # Extract age group death data
         for l in range(len(lines)):
            if 'age' in lines[l] and 'population' in lines[l]:            
             break 
@@ -405,6 +429,7 @@ def parse_file(file_name):
     return data
 
 def write_comparison(RDNames,filesData, output_file):
+# Writes a comparison of the evaluation results into an output file and generates LaTeX tables
     
     latexTables = []
     
@@ -441,6 +466,7 @@ def write_comparison(RDNames,filesData, output_file):
 
         latexTables.append(getLatexTable(txtTable, tblCaption, tblLabel , tblFormat))
 
+        # Write age group data for total, male, and female
         tblCaption = "Result vs Expected for SCD, CF, and DMD"
         txt = " --------------"+tblCaption +"---------------------------"    
         print(txt)
@@ -475,6 +501,7 @@ def write_comparison(RDNames,filesData, output_file):
 
         latexTables.append(getLatexTable(txtTable, tblCaption, tblLabel , tblFormat))
 
+        # Write age group death information
         txt =" ---------------- Age Groups: Total, Male, Female--------------------------"
         print(txt)
         f.write(txt+"\n")
@@ -565,7 +592,7 @@ def write_comparison(RDNames,filesData, output_file):
 
     return latexTables
 
-
+# Generates a LaTeX table from the given data.
 def getLatexTable(txtTable, tblCaption, tblLabel , tblFormat):
     hLine = r"\hline"
     
@@ -585,6 +612,7 @@ def getLatexTable(txtTable, tblCaption, tblLabel , tblFormat):
     latexTable.append(r"\end{table}")
     return latexTable
 
+# Writes the LaTeX tables to the output file
 def writeLatexTables(latexTables, outputPath):
     print("writing latex tables ........")
     # Check if file exists
@@ -602,6 +630,7 @@ def writeLatexTables(latexTables, outputPath):
                  f.write(line + "\n")
     f.close()
 
+# Collects results from all evaluation files and writes a summary.
 def getAllSummeryEvaluation(RDNames, resultPaths, outputPath):
     print("collecting results from all result files in : ", resultPaths)
     filesData =  [parse_file(file_name) for file_name in resultPaths]
@@ -609,7 +638,7 @@ def getAllSummeryEvaluation(RDNames, resultPaths, outputPath):
     writeLatexTables(latexTables, outputPath)
 
 
-# if this script called directly
+# Main script execution
 if __name__ == "__main__":
     # testing 
     if len(sys.argv) > 1:

@@ -7,7 +7,7 @@ with open('requirements.txt') as f:
 
 # Define the setup configuration (Name, version, packages and dependencies of the package)
 setup(
-    name='synthRD',
+    name='synthMD',
     version='0.01',
     packages=find_packages(),
     install_requires=requirements,

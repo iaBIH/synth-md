@@ -20,13 +20,14 @@ import pandas as pd
 from synthMD import MDutils
 
 ## -------------------------  Get Race populations using USA census API
+# Function to get USA census race data using the Census API
 def getUSACensusDataRace(censusAPIKey, censusQueryYear=None, censusXLSXYear=None, forceDownload=None,
                          usaIDs=None,race_data_path=None, doSave=None, proxies=None):
         
         proxies= {} if proxies is None else proxies
         usaIDs = [ "0" + str(id) if id <10 else str(id) for id in usaIDs]
         
-        ## Get states race             
+        # Define census variables for total, white, and black population (race)            
         ## Total, white, black: Ref:  https://api.census.gov/data/2020/dec/pl/variables.html
         censusVars      = "NAME,P1_001N,P1_003N,P1_004N"
         dataset_acronym = "/dec/pl"
@@ -49,6 +50,7 @@ def getUSACensusDataRace(censusAPIKey, censusQueryYear=None, censusXLSXYear=None
         csv.writer(open(race_data_path, 'w', newline='')).writerows(race_data)    
 
 ##  -------------- Get USA census age sex data using excel tables
+# Function to get USA census age and sex data using Excel tables
 def getUSACensusDataAgeSex(censusAPIKey=None, censusQueryYear=None, censusXLSXYear=None, forceDownload=None,
                             usaIDs=None, usaSNames=None, usaAgeFolderPath=None, doSave=None,  proxies=None):
         """
@@ -67,16 +69,20 @@ def getUSACensusDataAgeSex(censusAPIKey=None, censusQueryYear=None, censusXLSXYe
         ##  query_url = "https://api.census.gov/data/2016/acs/acs1?get=group(B01001)&for=us:*&key=" + censusAPIKey
         # The required data are available as xlxs for download    
         query_url_age_sex = "https://www2.census.gov/programs-surveys/popest/tables/" + censusXLSXYear + "/state/asrh/sc-est2021-syasex-"
-        # download all files and convert to csvs
+        # Download all files and convert to csvs
+        # Create directory for age data if it doesn't exist
         if not os.path.exists(usaAgeFolderPath):
              os.mkdir(usaAgeFolderPath)
+
+        # Download and convert Excel files to CSV
         for i,id in enumerate(usaIDs):
                     id       = "0" + str(id) if id <10 else str(id)
                     fnm      = id + ".xlsx" 
                     webLink  = query_url_age_sex + fnm 
                     xlsxPath = os.path.join(usaAgeFolderPath,"usa-age-sex-"+censusXLSXYear+"-"+id+"-"+usaSNames[i]+".xlsx")
                     csvPath  = xlsxPath[:-4]+"csv"
-                    # download only if file does not exist, to force download anyway use forceDownload=1
+          
+                    # Download only if file does not exist, to force download anyway use forceDownload=1
                     if forceDownload or not os.path.exists(csvPath):
                         try:
                             print("downloading : ", csvPath)
@@ -88,10 +94,11 @@ def getUSACensusDataAgeSex(censusAPIKey=None, censusQueryYear=None, censusXLSXYe
                                 urllib.request.install_opener(opener)
 
                             urllib.request.urlretrieve(webLink, xlsxPath)
-                            #print("convert xlsx to csv ....")
-                            # read the excel file into a pandas dataframe
+                            # print("convert xlsx to csv ....")
+                            # Read the excel file into a pandas dataframe
                             df = pd.read_excel(xlsxPath,  engine='openpyxl')
-                            # write the dataframe to a csv file
+                            
+                            # Write the dataframe to a csv file
                             df.to_csv(csvPath, index=False)
                             #print("removing old xlsx file ....")
                             #os.remove(xlsxPath)
@@ -103,6 +110,8 @@ def getUSACensusDataAgeSex(censusAPIKey=None, censusQueryYear=None, censusXLSXYe
 ## --------------------------------- Get USA Census Data                             
 def getUSACensusData(censusAPIKey, datasetFolder, censusQueryYear=None, censusXLSXYear=None, getAgeSexData=None, getRaceData=None,forceDownload=None,  doSave=None, proxies=None):
     print("=========================== Getting USA Census DATA ================================")
+
+    # Check if API key is provided
     if censusAPIKey==None:
        print("please get your API key from here: https://api.census.gov/data/key_signup.html")
        sys.exit(0)
@@ -115,12 +124,12 @@ def getUSACensusData(censusAPIKey, datasetFolder, censusQueryYear=None, censusXL
     getAgeSexData     = 1 if getAgeSexData is None else getAgeSexData
     getRaceData       = 1 if getRaceData is None else getRaceData
 
-    # storage paths
+    # Define storage paths
     # TODO: get from config file, also add using optional arguments from terminal
     usaAgeFolderPath         = os.path.join(datasetFolder,"usaAge"+censusXLSXYear)
     race_data_path           = os.path.join(datasetFolder,"usa-"+str(censusQueryYear)+"-states-race.csv")
 
-    # get USA states IDs, long and short names
+    # Get USA state IDs and names
     # IDs and short names are useful to work with API and other libs
     usaFIPS, usaSNames, usaLNames  = MDutils.getUSAstateNames() 
  
@@ -130,6 +139,7 @@ def getUSACensusData(censusAPIKey, datasetFolder, censusQueryYear=None, censusXL
     else:
         print("race data file exists: ", race_data_path)
 
+    # Get age/sex data if required
     if getAgeSexData: 
        getUSACensusDataAgeSex(censusAPIKey,censusQueryYear, censusXLSXYear, forceDownload, 
                               usaFIPS, usaSNames,usaAgeFolderPath, doSave, proxies=proxies)
@@ -137,7 +147,7 @@ def getUSACensusData(censusAPIKey, datasetFolder, censusQueryYear=None, censusXL
     impTimeEnd = time.time() - impTimeStart
     print("Import time process took: ", impTimeEnd, " seconds")
     
-# if this script called directly
+# Main script execution
 if __name__ == "__main__":
     # testing 
     if len(sys.argv) > 1:

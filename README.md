@@ -1,10 +1,10 @@
-# SynthRD: Synthetic Datasets for Software Development in Rare Disease Research
+# SynthMD: Synthetic Datasets for Software Development in Rare Disease Research
 
-SynthRD is a Python tool for generating synthetic patient data to support software development and evaluations in rare disease research. The method leverages publicly available statistics and correlations to generate synthetic records.
+SynthMD is a Python tool for generating synthetic patient data to support software development and evaluations in rare disease research. The method leverages publicly available statistics and correlations to generate synthetic records.
 
-![](https://github.com/BIH-MI/synthetic-rd-data/blob/main/resources/RDsStats_v5_gray.png)
+![](https://github.com/BIH-MI/synthetic-rd-data/blob/main/resources/RDsStats.png)
 
-This repository contains code to use the tool for generating three [synthetic datasets](https://github.com/BIH-MI/synthetic-rd-data/tree/main/RDdata/result) for three popular rare diseases i.e. [Sickle Cell Disease](https://en.wikipedia.org/wiki/Sickle_cell_disease) (SCD), [Cystic Fibrosis](https://en.wikipedia.org/wiki/Cystic_fibrosis) (CF), and [Duchenne Muscular Dystrophy](https://en.wikipedia.org/wiki/Duchenne_muscular_dystrophy) (DMD). The datasets contain demographic data and selected clinical parameters.
+This repository contains code to use the tool for generating three [synthetic datasets](https://github.com/BIH-MI/synthetic-rd-data/tree/main/MDdata/result) for three popular rare diseases i.e. [Sickle Cell Disease](https://en.wikipedia.org/wiki/Sickle_cell_disease) (SCD), [Cystic Fibrosis](https://en.wikipedia.org/wiki/Cystic_fibrosis) (CF), and [Duchenne Muscular Dystrophy](https://en.wikipedia.org/wiki/Duchenne_muscular_dystrophy) (DMD). The datasets contain demographic data and selected clinical parameters.
 
 ## Repository Structure
 
@@ -28,28 +28,28 @@ This repository contains code to use the tool for generating three [synthetic da
                 ├── requirements.txt
                 ├── resources: Images used in this Readme file.
                 ├── setup.py: Setup file 
-                └── synthRD: Source code
+                └── synthMD: Source code
                    ├── __init__.py
                    ├── LICENSE.txt
-                   ├── RDcharts.py: Charting 
-                   ├── RDcreate.py: Synthetic data generation
-                   ├── RDevaluate.py: Evaluation 
-                   ├── RDimport.py: Importing data from census 
-                   ├── RDprepare.py: Preprocessing 
-                   ├── RDutils.py: Utilities 
-                   └── synthRD.py: Setup                
+                   ├── MDcharts.py: Charting 
+                   ├── MDcreate.py: Synthetic data generation
+                   ├── MDevaluate.py: Evaluation 
+                   ├── MDimport.py: Importing data from census 
+                   ├── MDprepare.py: Preprocessing 
+                   ├── MDutils.py: Utilities 
+                   └── synthMD.py: Setup                
 
 ## Installation Guide
 
-Follow these steps to set up SynthRD and start generating synthetic datasets.
+Follow these steps to set up SynthMD and start generating synthetic datasets.
   
 ### 1. Obtain Your Census API Key
 To import US Census data, you'll need an API key:
 - Visit the [Census API Signup Page](https://api.census.gov/data/key_signup.html) to get your API key. Check the Census website for any additional details.
-- (Modify the `RDimport` file if necessary to accommodate specific requirements.)
+- (Modify the `MDimport` file if necessary to accommodate specific requirements.)
 - You will receive the API key by e-mail.
 
-### 2. Download and Install SynthRD
+### 2. Download and Install SynthMD
 
               git clone https://github.com/BIH-MI/synthetic-rd-data.git
               cd synthetic-rd-data
@@ -72,7 +72,7 @@ _You can find three generated example files here: [Example files](https://github
 
 ## Extending the code
 
-To extend the scripts to generate data for a new rare disease modify the file [RDsDataUSA.json](https://github.com/BIH-MI/synthetic-rd-data/blob/main/config/RDsDataUSA.json) and create a new disease configuration similar to the ones already included:
+To extend the scripts to generate data for a new rare disease modify the file [MDsDataUSA.json](https://github.com/BIH-MI/synthetic-rd-data/blob/main/config/MDsDataUSA.json) and create a new disease configuration similar to the ones already included:
 
                   {
                   "RDID": 4,
@@ -146,7 +146,7 @@ Modify [example.py](https://github.com/BIH-MI/synthetic-rd-data/blob/main/exampl
         doCreate     = 1 
         doEvaluation = 1    
   
-  After that, you can use RDcreate.py to create synthetic data using the newly provided statistics.
+  After that, you can use MDcreate.py to create synthetic data using the newly provided statistics.
 
 ## License
 

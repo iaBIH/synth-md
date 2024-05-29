@@ -3,20 +3,23 @@ import matplotlib.pyplot as plt, numpy as np, geopandas as gpd, pandas as pd
 import matplotlib.patheffects as PathEffects
 from synthMD import MDutils 
 
-# saving chart data to csv file for external processing if needed
+# Function to save chart data to a CSV file for external processing
 def saveChartData(inputData,figPath):
 
+    # Create default values if none are provided
     if inputData[2] is None:
        inputData[2] =list(range(len(inputData[0])))
     if inputData[3] is None:
        inputData[3] =list(range(len(inputData[0])))
-    
+
+    # Determine if the input data includes state labels
     if len(inputData[0]) == len(inputData[-1]):
        data = [[x,y,xT,xTLbl] for x,y,xT,xTLbl in zip(*inputData)]
     else:
        X,Y,Xticks,statesLabels = inputData
        data = [[x,y,xT] for x,y,xT in zip(X,Y,Xticks)] 
 
+    # Create a CSV file path
     fnmPath = figPath[:-4] + ".csv"
     with open(fnmPath, 'w') as f:
         for row in data:
@@ -25,13 +28,16 @@ def saveChartData(inputData,figPath):
 
     f.close()
 
+# Function to plot data
 def plotData(Y, figTitle=None, XticksLabelsLst=None, isPercentageOutput=None, doShow=None, chartFnmPath=None, szW=20, szH=10):
 
+        # Set default values if none are provided
         doShow = 1 if doShow is None else doShow     
         isPercentageOutput=0 if isPercentageOutput is None else isPercentageOutput
     
         figTitle = "chart" if figTitle is None else figTitle
-        
+
+        # Convert data to percentages if required
         Y = [ x/sum(Y)*100 for x in Y] if isPercentageOutput else Y
         Ylabel= 'percentage %' if isPercentageOutput else 'counts'
 
@@ -39,7 +45,8 @@ def plotData(Y, figTitle=None, XticksLabelsLst=None, isPercentageOutput=None, do
         Xticks = list(range(len(X)))        
         XticksLabelsLst = X if XticksLabelsLst is None else XticksLabelsLst   
         XlabelRotation= 60 if len(X)>50 else 0     
-   
+
+        # Set up the figure
         plt.clf()
         plt.gcf().set_size_inches(szW,szH)
         plt.title(figTitle, fontsize=20)
@@ -49,21 +56,22 @@ def plotData(Y, figTitle=None, XticksLabelsLst=None, isPercentageOutput=None, do
         plt.margins(x=0, y=0)
         plt.xticks(Xticks, fontsize=8, rotation=XlabelRotation, labels=XticksLabelsLst)
         plt.bar(X,Y)
-        
+
+        # Save the chart to a file if a path is provided
         if not chartFnmPath is None:            
            plt.savefig(chartFnmPath)           
            saveChartData([X,Y,Xticks,XticksLabelsLst],chartFnmPath)
 
+        # Display the chart if requested
         if doShow:
            plt.show()        
         
         plt.close()
 
-# plotting a map and data as a color map
-# input is a list of lists: data = [ [dataName,Value],... ]
-# dataName will be mapped to mapName in the map data
+# Function to plot a map with data as a color map
 def plotMap(input_data, cfg=None):
 
+    # Default configuration if none is provided
     cfg = cfg if not cfg is None else { "shapefile_path": "datasets/usa/map/cb_2018_us_state_20m.shp",
                                         "xylim": [-130, -60, 20, 55],
                                         "fontsize": 6,
@@ -78,13 +86,11 @@ def plotMap(input_data, cfg=None):
                                     }
 
 
-    # Path to the shapefile (.shp) of USA states    
+    # Load the shapefile using geopandas  
     shapefile_path = cfg["shapefile_path"]
-
-    # Load the shapefile using geopandas
     mapData = gpd.read_file(shapefile_path)
 
-    # names could be: state, city, zipcode, ...
+     # Convert the input data to a pandas DataFrame
     data = {
     "state": [name for name in input_data.keys()],
     "vals": list(input_data.values())
@@ -102,12 +108,13 @@ def plotMap(input_data, cfg=None):
     # Plot the map
     merged.plot(column="vals", cmap=cfg["cmap"], linewidth=0.8, ax=ax, edgecolor="0.8", legend=True)
    
-    # Adjust the x-limits of the plot to better fit the map
+    # Adjust the x-limits and y-limits of the plot to better fit the map
     ax.set_xlim(cfg["xylim"][0], cfg["xylim"][1])
     ax.set_ylim(cfg["xylim"][2], cfg["xylim"][3])
 
     # Add annotations for each state
     for idx, row in merged.iterrows():
+        
         # Get the coordinates for the annotation from the centroid of the geometry
         x, y = row['geometry'].centroid.x, row['geometry'].centroid.y
 
@@ -126,15 +133,17 @@ def plotMap(input_data, cfg=None):
     # Set the title
     ax.set_title(cfg["mapTitle"])
 
+    # Save the map to a file if requested
     if cfg["doSave"]:
        plt.savefig(cfg["outputFnmPath"])
        saveChartData([[name for name in input_data.keys()],list(input_data.values()),None,None],cfg["outputFnmPath"])
 
+    # Display the map if requested
     if cfg["doShow"]:      
        # Show the plot
        plt.show()    
     
-        
+# Function to get frequency of data from a list        
 def getFreqFromList(data, isPercentageOutput=None):
 
     isPercentageOutput = isPercentageOutput if not isPercentageOutput is None else 0
@@ -154,6 +163,7 @@ def getFreqFromList(data, isPercentageOutput=None):
     result = [labels, freq]    
     return result
 
+# Function to plot patient charts
 def plotPatientsCharts(p, dataLabels, dataArray, chartFolderPath, rdSName,statesLabels,  rd_datasset_size, isPercentageOutput):
 
             statesIDs, statesSName, statesLName =  MDutils.getUSAstateNames()
@@ -168,6 +178,7 @@ def plotPatientsCharts(p, dataLabels, dataArray, chartFolderPath, rdSName,states
             szH = 6
             Ylabel= 'percentage %' if isPercentageOutput else 'counts'
 
+            # Set up the figure
             plt.clf()
             plt.gcf().set_size_inches(szW,szH)
             plt.title(rdSName+" : "+pltTitle, fontsize=20)
@@ -219,7 +230,7 @@ def plotPatientsCharts(p, dataLabels, dataArray, chartFolderPath, rdSName,states
                 plt.savefig(chartFnmPath)
      
             else: 
-                #clinical parameters
+                # Clinical parameters
                 stepSize = 0.01
                 X = np.arange((np.min(L)), (np.max(L)), stepSize) if (np.max(L) - np.min(L))  < 100 else np.arange((np.min(L)), (np.max(L)), 1)   
                 n, bins, _ = plt.hist(L, bins=len(X))
@@ -227,12 +238,13 @@ def plotPatientsCharts(p, dataLabels, dataArray, chartFolderPath, rdSName,states
                 saveChartData([bin_centers,n,None,None],chartFnmPath)
                 plt.savefig(chartFnmPath)
 
+# Function to plot death charts
 def plotDeathCharts(p, dataArray, sexLabels, racelabels, isPercentageOutput, maxUSAAge, rdSName, statesLabels, rd_datasset_size, chartFolderPath, szW,szH):
       
         raceNamesLst = racelabels[1]  
         sexLst       = sexLabels[0]
 
-        ##death per: age, state, sex, race         
+        # Death per: age, state, sex, race      
         Y1 = [len([x for x in dataArray if (x[8] not in (None, 0)) and (x[1]==a)])  for a in range(maxUSAAge+1)]
         Y2 = [len([x for x in dataArray if (x[8] not in (None, 0)) and (x[2]==a)])  for a in MDutils.getUSAstateNames()[2]]       
         Y3 = [len([x for x in dataArray if (x[8] not in (None, 0)) and (x[4]==a)])  for a in sexLst]
@@ -267,7 +279,8 @@ def plotDeathCharts(p, dataArray, sexLabels, racelabels, isPercentageOutput, max
             saveChartData([X,Y,Xticks,XticksLabels],chartFnmPath)
             plt.savefig(chartFnmPath)
             p = p + 1
- 
+
+# Function to plot rare disease data
 def plotRareDiseaseData(fnm, sexLabels, racelabels, isPercentageOutput=None):
         print("=======================================================================")
         print("        RD CREATE CHARTS ")
@@ -275,7 +288,7 @@ def plotRareDiseaseData(fnm, sexLabels, racelabels, isPercentageOutput=None):
         startTm = time.time()
         isPercentageOutput = isPercentageOutput if not isPercentageOutput is None else 0 
 
-        # get disease name and output path from the file name
+        # Get disease name and output path from the file name
         chartFolderPath, csvFnm = os.path.split(fnm) # os.path.dirname(fnm)
         rdSName =  csvFnm.split("_")[0]
 
@@ -291,11 +304,12 @@ def plotRareDiseaseData(fnm, sexLabels, racelabels, isPercentageOutput=None):
         print("============    Charts   ================")
         #   0,     1,     2,       3,         4,      5,       6,           7,          8,         9,     10  ]
         # "idx", "age",	"state", "zipCode",	"sex",	"race",	"birthDate", "diagDate", "deathDate", "CP1",  "CP2"]
-
+    
+        # Excluded labels
         excludedLabels =  ["idx","zipCode"]
         chartsIdx= [ j  for j in range(len(dataLabels)) if not dataLabels[j] in excludedLabels] 
 
-        # figure size 
+        # Figure size 
         szW = 10; szH = 6
         for p in chartsIdx:                    
             plotPatientsCharts(p, dataLabels, dataArray, chartFolderPath, rdSName,statesLabels,  rd_datasset_size, isPercentageOutput)
@@ -310,6 +324,7 @@ def plotRareDiseaseData(fnm, sexLabels, racelabels, isPercentageOutput=None):
         print("Preprocessing time for plotting = ", endTm, " seconds")
         print("-------------------  Plotting done! -------------------------")
 
+# Main script execution
 if __name__ == "__main__":
     if len(sys.argv) > 1:
        fnm = sys.argv[1]

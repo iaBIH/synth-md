@@ -3,7 +3,7 @@
 ##=======================================================================================
 import os, sys, csv, time, datetime, random
 import numpy as np
-# for zip codes
+# Import library for handling zip codes
 from pyzipcode import ZipCodeDatabase
 zcdb = ZipCodeDatabase()
 from synthMD import MDevaluate, MDutils
@@ -11,53 +11,59 @@ from synthMD import MDevaluate, MDutils
 # -------------------- generateGroupPatientsgData---------------------
 def getStateGroupPatients(patentsCount, ageDist, sexDist, rdAgeGroupsLst,deathRateAgeDists, stateZips,raceDist,ageDiagDist,parData,
                               addTimeToDates, usaNames, s ):
-        
+
+        # Unpack USA names
         usaIDs,  usaStateShortNames, usaStateLongNames  = usaNames
         groupPatientsData=[]
-        for g, ag in enumerate(rdAgeGroupsLst):                       
-            # get age group distribution and shuffle it 
-            # instead of random sampling we will pick element each time 
 
+        # Loop over age groups
+        for g, ag in enumerate(rdAgeGroupsLst): 
+          
+            # Get and shuffle age group distribution
             gDist = ageDist[g] if s is None else ageDist[s][g]
             random.shuffle(gDist)
 
-            # get death distribution of this age group 
+            # Get death distribution for the age group 
             ageDeadDist  = deathRateAgeDists[g]               
              
-            # reset patients counter 
+            # Reset patient counter 
             p = 0
+
+            # Generate patient data for each element in the age group distribution
             for p in range(len(gDist)):
                 
-                # the patient should be distributed based on race, and gender statistics 
-                               
+                # Assign random state if not specified  
                 pState    = usaStateShortNames[random.randint(0,50)] if  s is None  else s
-             
+
+                # Select random sex based on the age group
                 pSex      = random.choice(sexDist[g])  #  if  s is None  else random.choice(sexDist[s])          
 
-                # select sex randomlly based on the rare disease weight and the population of this age group
+                # Increment patient count
                 patentsCount = patentsCount + 1
 
-                #  get random age from current age group  
+                # Get random age from current age group  
                 pAge      = gDist.pop() 
-                         
+
+                # Select random zip code
                 pZipCode = random.choice(stateZips)
-                        
+
+                # Select random race
                 pRace = random.choice(raceDist) 
 
-                # generate random birthdate based on age
+                # Generate birthdate based on age
                 pBirthDate = datetime.date(2023,1,1) + datetime.timedelta(days=-pAge*365)
 
-                #  generate random diagonsis date based on the birthdate and the disease
-                ageDiagFactor = round(random.choice(ageDiagDist))
+                # Generate diagnosis date based on birthdate and diagnosis factor
+                ageDiagFactor = round(random.choice(ageDiagDist.tolist()))
                 pDiagDate     = pBirthDate + datetime.timedelta(days=ageDiagFactor)
 
-                # get death date if patient is dead, the age and death rate decide the death status
+                # Initialize death date
                 pDeathDate = None
 
-               # check if the patient is alive or not            
+                # Determine if the patient is alive            
                 isAlive  = random.choice(ageDeadDist) 
 
-                # check the gender 
+                # If patient is not alive, generate death date
                 if not isAlive:  
                     pBirthDate, pDiagDate, pDeathDate = MDutils.getDeathDate(pAge, pBirthDate, pDiagDate, ageDiagFactor, addTimeToDates)            
                 elif addTimeToDates:
@@ -69,16 +75,17 @@ def getStateGroupPatients(patentsCount, ageDist, sexDist, rdAgeGroupsLst,deathRa
                     pDiagDate  = str(pDiagDate)  
                 
                 # TODO:  fix a bug of time is added 
-                # generate clinical parameters based on the disease
-                pParData = [round(random.choice(x),3) for x in parData]                              
+                # Generate clinical parameters
+                pParData = [round(random.choice(x.tolist()),3) for x in parData]                              
 
-                # create a patient data row
+                # Create patient data row
                 pData = [patentsCount, pAge, usaStateLongNames[pState] ,pZipCode, pSex, pRace, pBirthDate, pDiagDate, pDeathDate]
                 pData.extend(pParData)
 
-                # get next patient for this age group  
+                # Get next patient for this age group  
                 p = p + 1
 
+                # Append patient data to group
                 groupPatientsData.append(pData)
 
         return patentsCount, groupPatientsData
@@ -91,19 +98,20 @@ def getStatePatients(i,s,st, usaAgeSexGroupData, patentsCount, deathRates,number
             patients for each age group for current state. 
             """
 
-            ## Get all zip codes for this state
+            # Get all zip codes for the state
             stateZips    = [z.zip for z in zcdb.find_zip(state=st)]; stateZips = [z.zfill(5) for z in stateZips]
 
-            # sex weight from age group population
+            # Calculate sex weight distribution for the age groups
             # femaleCount / femaleCount+maleCount
             sexWeightAges   = [round(( usaAgeSexGroupData[1][s][g]/( usaAgeSexGroupData[1][s][g]+ usaAgeSexGroupData[0][s][g]))*100) for g in range(len(rdAgeGroupsLst))]
             totalSexWeight  = [int(round( sexWeight * rdSexWeight + sexWeightAges[g]  * (1-rdSexWeight) )) for g in range(len(rdAgeGroupsLst))]
-            # create sex distribution for this age group of this state 
+            # Create sex distribution for this age group of this state 
             sexDist = [MDutils.getGroupDistriution(['f','m'], [totalSexWeight[g], 100-totalSexWeight[g]]) for g in range(len(rdAgeGroupsLst))]
-            
+
+            # Get death rate distribution for the state
             deathRateAgeDists  = MDutils.getStatesDeathRateDists(s, deathRates[i], numberOfPatientsForAgeGroups[s])  
             
-            # --------------- Get all patirnts for each age group of the current state 
+            # Generate patient data for each age group in the state
             patentsCount, pData = getStateGroupPatients(patentsCount, stateAgeDistLst, sexDist, rdAgeGroupsLst,deathRateAgeDists, 
                                                         stateZips, raceDist, ageDiagDist,parData,addTimeToDates, usaNames=usaNames,  s = s )
             
@@ -118,7 +126,7 @@ def createSyntheticDatasets(cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGrou
 
    usaAgeSexDataFilesPath, resultsFolderPath= paths
              
-   #----- Extract required fields and prepare the data  
+   # Extract required fields and prepare the data
 
    # Names, short names, and orpha codes 
    RDnamesLst        = [x["name"]          for x in RDsData]
@@ -181,10 +189,10 @@ def createSyntheticDatasets(cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGrou
    #        we can use the total number of dead patients to compute the correction factor or
    #        find statistics about number of patients per age  
 
-   # percentage of female affected for each rare disease
+   # Percentage of female affected for each rare disease
    sexWeights = [x[1] for x in [list(rd['sex_percentage'].values()) for rd in RDsData]]
    
-   #  sex weight control   
+   #  Sex weight control   
    rdSexWeight = 0.990001 # if 1.0, ageSexWeight will not included
 
    raceDists =[MDutils.getGroupDistriution(raceNamesLst, raceWeights[i]) for i in range(len(RDnamesLst))]
@@ -193,7 +201,8 @@ def createSyntheticDatasets(cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGrou
 
    #---------------------------------------
    number_of_generated_patients_Lst = []
-   ## Loop through diseases list:
+  
+   # Loop through diseases list:
    for i, rd in enumerate(RDnamesLst):
          
       startRdTm = time.time() 
@@ -241,18 +250,18 @@ def createSyntheticDatasets(cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGrou
       # Date of diagnostic: create normal distribution      
       ageDiagDist = MDutils.sampleFromNormalDistribution(minVal=diagDateLst[i][0], maxVal=diagDateLst[i][1], sampleSize=100000)           
 
-      # number of patients for each state based on race inforrmation           
+      # Number of patients for each state based on race inforrmation           
       # 51 elements, each is the total number of patients
       numberOfPatientsStatesRace    = [ int(sum([(x *  y) for x,y in zip(prevalenceRaceLst[i], racePopulation)]))  for racePopulation in racePopulationsSt ]
 
       numberOfPatientsStatesResized = [  x for x in numberOfPatientsStatesRace]
       
-      # final number of patients for each state 
+      # Final number of patients for each state 
       numberOfPatientsStatesFinal   = numberOfPatientsStatesResized   if rd_datasset_size > 0 else numberOfPatientsStatesRace  
       
       # Generate number of patients for each age group based on the above information
       # Note: we don't have statistics about number of patients per age group 
-      # number of patient for each age group for each state:  51 x 7  
+      # Number of patient for each age group for each state:  51 x 7  
       #                           ageRatio * total_expected_patients                            
       numberOfPatientsForAgeGroups  = [ [ round(x/sum(usaAgeSexGroupData[2][k]) * numberOfPatientsStatesFinal[k]) for x in usaAgeSexGroupData[2][k]] for k in range(len(usaStateShortNames))]
      
@@ -260,7 +269,7 @@ def createSyntheticDatasets(cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGrou
       numPSTs  = [round((stTotals[s]/total_USA_Population) * total_expected_patients) for s in range(len(usaStateShortNames))] 
       
 
-      # ------ create age distribution for each state          
+      # ------ Create age distribution for each state          
       # 7 x 96  age groups and their age distributions
       # for each age, we create a distribution based on the population of each state
       #                             age group 0                                                                    age group n
@@ -320,7 +329,7 @@ def createSyntheticDatasets(cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGrou
    
    return number_of_generated_patients_Lst
 
-# if this script called directly,
+# Main script execution
 if __name__ == "__main__":
    # testing 
    if len(sys.argv) > 1:
