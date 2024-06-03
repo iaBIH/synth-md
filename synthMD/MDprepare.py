@@ -11,7 +11,7 @@ from scipy.optimize import minimize
 
 from synthMD import MDutils, MDcharts
 
-
+# Function to read race data from a CSV file and restructure it
 def getRaceData(cfg, raceDataFilePath):
     
     print("Reading race data: ", raceDataFilePath)
@@ -39,6 +39,8 @@ def getRaceData(cfg, raceDataFilePath):
 #-------------------------------- Extract Age Sex Data from usaAgeSexDataFolderPath into 4 files
 #  usaAgeSexDataFilePath: all useful extratced data 
 #  usaAgeSexMaleDataFilePath, usaAgeSexFemaleDataFilePath, usaAgeSexTotalDataFilePath: data of male, female and both
+
+# Function to extract and process age-sex data from multiple CSV files
 def getAgeSexData(usaAgeSexDataFolderPath, usaAgeSexDataFilePath, usaAgeSexMaleDataFilePath, usaAgeSexFemaleDataFilePath, usaAgeSexTotalDataFilePath):
     
     ageSexData=[]
