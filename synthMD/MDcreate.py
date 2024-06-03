@@ -48,7 +48,7 @@ def getStateGroupPatients(patentsCount, ageDist, sexDist, rdAgeGroupsLst,deathRa
                 pBirthDate = datetime.date(2023,1,1) + datetime.timedelta(days=-pAge*365)
 
                 #  generate random diagonsis date based on the birthdate and the disease
-                ageDiagFactor = round(random.choice(ageDiagDist))
+                ageDiagFactor = round(random.choice(ageDiagDist.tolist()))
                 pDiagDate     = pBirthDate + datetime.timedelta(days=ageDiagFactor)
 
                 # get death date if patient is dead, the age and death rate decide the death status
@@ -70,7 +70,7 @@ def getStateGroupPatients(patentsCount, ageDist, sexDist, rdAgeGroupsLst,deathRa
                 
                 # TODO:  fix a bug of time is added 
                 # generate clinical parameters based on the disease
-                pParData = [round(random.choice(x),3) for x in parData]                              
+                pParData = [round(random.choice(x.tolist()),3) for x in parData]                              
 
                 # create a patient data row
                 pData = [patentsCount, pAge, usaStateLongNames[pState] ,pZipCode, pSex, pRace, pBirthDate, pDiagDate, pDeathDate]
