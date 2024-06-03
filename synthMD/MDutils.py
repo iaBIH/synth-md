@@ -14,25 +14,28 @@ def readInputFiles(cfgPath):
       """
       # Read configuration and rare disease data from files:
       cfg               = json.load(open(cfgPath))
- 
+
+      # Construct paths from configuration
       rdsPath = os.path.join(*list(cfg["paths"]["rdsPath"]))
       usaRaceDataPath = os.path.join(*list(cfg["paths"]["usaRaceDataPath"]))
       usaAgeSexDataFilesPath= os.path.join(*list(cfg["paths"]["usaAgeSexDataFilePath"]))
       resultsFolderPath= os.path.join(*list(cfg["paths"]["resultsFolderPath"]))
       age_sex_catigories = list(cfg["age_sex_catigories"])
 
+      # Append age/sex categories to the path
       usaAgeSexDataFilesPath = [usaAgeSexDataFilesPath+x for x in age_sex_catigories]
-      
+
+      # Read rare disease data
       RDsData           = json.load(open(rdsPath))
       RDsData           = RDsData["RDs"]
        
-      # USA states populations per race
-      # 51 x 6
+      # Read race data from CSV
+      # USA states populations per race: 51 x 6
       # ID	State	African-American	European-American	Others	Total
       raceData = [row for row in csv.reader(open(usaRaceDataPath), delimiter=",", quotechar='"')]
       raceData = [  [int(x[0]), x[1], int(x[2]),int(x[3]),int(x[4]),int(x[5]) ] for x in raceData[1:]]
    
-      # reade the prepared data: 
+      # Read age/sex data from CSV  
       usaAgeSexData = [ [ [int(x[0]), x[1]] +[int(y) for y in x[2:] ] for x in [row for row in csv.reader(open(fnm+"_ext.csv"), delimiter=",", quotechar='"')]] for fnm in usaAgeSexDataFilesPath]
       usaAgeSexGroupData = [ [ [int(x[0]), x[1]] +[int(y) for y in x[2:] ] for x in [row for row in csv.reader(open(fnm+"_grp.csv"), delimiter=",", quotechar='"')]] for fnm in usaAgeSexDataFilesPath]
       
@@ -53,8 +56,10 @@ def readInputFiles(cfgPath):
 
       return cfg, RDsData, raceData, usaAgeSexData, usaAgeSexGroupData, [usaAgeSexDataFilesPath, resultsFolderPath]
 
+# Function to get race data
 def getRaceData(raceData, RDsData): 
-   
+
+   # Sum populations by race
    # raceData: ID	State	African-American	European-American	Others	Total
    # African-American (AA), European-American (EA), and others (OA) populations of each state
    total_AA_Population = sum([x[2] for x in raceData])
@@ -66,14 +71,15 @@ def getRaceData(raceData, RDsData):
    # total race for each state 
    # raceData: ID	State	African-American	European-American	Others	Total
 
+   # Populations per state by race
    AA_PopulationsSt  = [x[2] for x in raceData]         
    EA_PopulationsSt  = [x[3] for x in raceData]  
    OA_PopulationsSt  = [x[4] for x in raceData] 
    racePopulationsSt = [[x,y,z] for x,y,z in zip(AA_PopulationsSt, EA_PopulationsSt, OA_PopulationsSt)]
 
-
    total_USA_Population_From_Race  = sum([sum(x) for x in racePopulationsSt]) 
 
+   # Get race weights and number of patients
    # How many patients per race AA,EA,OA
    # Notes: SCD affect AA moastly
    #        CF  affects EA moastly
@@ -94,7 +100,7 @@ def getRaceData(raceData, RDsData):
    return raceWeights, total_USA_Population_From_Race, prevalenceRaceLst, racePopulations, racePopulationsSt
     
 #--------------------------Functions for generating data--------------------------
-# get death rate based on age, race, sex statitics 
+# Get death rate based on age, race, sex statitics 
 def getStatesDeathRateDists(s, rdDeathRates, numberOfPatientsForAgeGroups):
      
       # Find dead patients based on age 
@@ -106,14 +112,15 @@ def getStatesDeathRateDists(s, rdDeathRates, numberOfPatientsForAgeGroups):
 
       return  deathRateAgeDists
 
-
+# Function to generate random time
 def getRandomTime(inputDate):
 
-    # add random time hours minutes seconds
+    # Add random hours, minutes, and seconds
     randomHours   = random.randint(0,24)    
     randomMinutes = random.randint(0,60)
     randomSeconds = random.randint(0,60)
 
+    # Format time values
     randomHours   = str(randomHours)   if randomHours>9   else "0" + str(randomHours)
     randomMinutes = str(randomMinutes) if randomMinutes>9   else "0" + str(randomMinutes)
     randomSeconds = str(randomSeconds) if randomSeconds>9 else "0" + str(randomSeconds)
@@ -129,9 +136,10 @@ def getRandomTime(inputDate):
 def getDeathDate(inputAge, birthDate, diagDate, ageDiagFactor, addTimeToDates):
         deathDateS = None
        
-        # update the birthdate and the diagnostic date relativly to the death date
-        # the age now means the age when the patient died
+        # Update the birthdate and the diagnostic date relativly to the death date
+        # The age now means the age when the patient died
 
+        # Calculate birth and diagnostic dates
         startDate = datetime.date(1920,1,1)
         endDate   = datetime.date(2023-inputAge,1,1) 
 
@@ -141,28 +149,30 @@ def getDeathDate(inputAge, birthDate, diagDate, ageDiagFactor, addTimeToDates):
 
         deathDate = str(birthDate.date() + datetime.timedelta(days=inputAge * 365))
 
-        # remove the time from the date
+        # Format birth date
         birthDate = str(birthDate)[:10]
-        
+
+        # Add time to dates if required
         if addTimeToDates:            
             birthDate = getRandomTime(birthDate)
             diagDate  = getRandomTime(diagDate)
             deathDate = getRandomTime(deathDate)
         return birthDate, diagDate, deathDate
 
-
-
 #------------------- Create a distribution to sample from  --------------------
 def getGroupDistriution(labelLst, countLst):       
-    # check if we have large numbers, reduce them
+    # Check if we have large numbers, reduce them
     countLst = [round(x) for x in countLst]
     if countLst[0]>1000:
        countLst = [int(x/1000) for x in countLst]  
 
+    # Create distribution
     dist = [[x]*y for x,y in zip(labelLst, countLst)]
+    
     # Flatten list
     dist   = [item for sublist in dist for item in sublist]
-        # shuffle
+    
+    # Shuffle
     random.shuffle(dist)
     return dist
 
@@ -171,16 +181,16 @@ def  getAgeDistribution(stData, numPST, rdAgeGroupsLst, total_number_of_patients
      stateAgeDist = []
      dataLabels=list(range(len(stData)))
 
-     # total population of this state  
+     # Calculate total population of the state   
      stTotal = sum(stData)
 
-     # create age ratio for each age 
+     # Calculate age ratios and rates  
      stateAgeRatio = [ round( stData[x] / stTotal ,5)              for x in range(len(stData)) ]    
 
-     # Number of patients per age for this state 
+     # Number of patients per age for this state  
      stateAgeRates  = [ round(     stateAgeRatio[x]  *  numPST   )  for x in range(len(dataLabels)) ]    
 
-     # repeat for each age  
+     # Repeat for each age  
      for k in range(len(dataLabels)): 
          ageDist = []
          for r in range (stateAgeRates[k]):
@@ -244,6 +254,7 @@ def getUSAstateNames(isDCIncluded=None):
     return usaNames
 
 #------------------- Get index of age group --------------------
+# Determine age group based on age
 def getAgeGroupIndex(age):
         if age < 5:
            ageG = 0
@@ -262,6 +273,7 @@ def getAgeGroupIndex(age):
         return ageG  
 
 #---------------  find range of each age group  ---------------- 
+# Determine age range based on age group index
 def getAgeRangeFromAgeGroup(ageGroupIndex, maxAge):
     ageStart = None; ageEnd= None
     if   ageGroupIndex == 0:
@@ -282,7 +294,7 @@ def getAgeRangeFromAgeGroup(ageGroupIndex, maxAge):
     return   ageStart, ageEnd 
 
 #--------------------------------   readingCSVdata  ----------------
-# used in charting
+# Read CSV data for charting
 def readingCSVdata(csvFnm, maxUSAAge=None):
     with open(csvFnm) as dataFile:
         dataReader  = csv.reader(dataFile, delimiter=";", quotechar='"')
@@ -308,6 +320,7 @@ def readingCSVdata(csvFnm, maxUSAAge=None):
        
     return maxUSAAge, dataLabels, newDataArray
 
+# Function to get files matching a string in a directory
 def RDGetFiles(directory, string):
     # Traverse the directory structure
     filesLst = []
