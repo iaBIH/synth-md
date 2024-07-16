@@ -20,7 +20,8 @@ The synthetic data follow the input census and disease statistics with high accu
 
 ### Citation: 
 
-This tool and the datasets are described in this paper: [Synthetic Datasets for Software Development in Rare Disease Research]() (to be published). 
+This tool and the datasets are described in this paper: [Al-Dhamari, Abu Attieh and Prasser. Synthetic datasets for open software development in rare disease research. Orphanet J Rare Dis 19, 265 (2024). https://doi.org/10.1186/s13023-024-03254-2](https://ojrd.biomedcentral.com/articles/10.1186/s13023-024-03254-2).
+
 
 ### Features:
 
